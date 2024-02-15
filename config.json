@@ -1,0 +1,34 @@
+{
+    "MAX_ORDERS": 3,
+    "MAX_GPU": 3,
+    "XUNI_MAX_GPU": 8,
+    "API_KEY": "",
+    "GPU_DPH_RATES": {
+        "RTX 4090": 0.1
+    },
+    "CURRENT_MARKET_DPH": {
+        "RTX 4090": "Loading...",
+        "RTX 3090": "Loading...",
+        "RTX 3060": "Loading...",
+        "RTX A6000": "Loading...",
+        "RTX A5000": "Loading...",
+        "RTX A4000": "Loading...",
+        "A40": "Loading..."
+    },
+    "GPU_MARKET": "RTX 4090",
+    "XUNI_GPU_MARKET": "RTX 4090",
+    "ETH_ADDRESS": "",
+    "PRIVATE_KEY_PATH": "",
+    "PASSPHRASE": "",
+    "IGNORE_MACHINE_IDS": [
+        184
+    ],
+    "SORT_COLUMN_INDEX": 13,
+    "THRESHOLD": 1.0,
+    "SORT_ORDER": "ascending",
+    "CONFIG_WIZARD": false,
+    "DARK_THEME": false,
+    "REMOVE_SCHEDULING": false,
+    "REMOVE_INACTIVE": false,
+    "REMOVE_OFFLINE": false
+}
