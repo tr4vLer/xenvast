@@ -218,7 +218,7 @@
                         <tr>
                             <td style="width: 20%;"><input type="checkbox" name="instance_ids" style="margin-right:10px;" value="{{ instance['instance_id'] }}"><strong>Instance ID:</strong> {{ instance['instance_id'] }}</td>
                             <td><span style="font-size: 90%;" class="badge {% if instance['verification'] == 'verified' %}badge-success{% else %}badge-warning{% endif %}">{{ instance['verification'] }}</span>&nbsp&nbsp&nbsp<strong>Machine ID:</strong> {{ instance['machine_id'] }}&nbsp&nbsp&nbsp<strong>Host ID:</strong> {{ instance['host_id'] }}&nbsp&nbsp&nbsp<strong>Location:</strong> {{ instance['geolocation'] }}</td>
-							<td style="width: 20%;">
+							<td style="width: 23%;">
 								<form id="reboot-instance-form">
 									<input type="hidden" id="instance_id_reboot" name="instance_id_reboot" value="{{ instance['instance_id_reboot'] }}">
 									<button type="button" style="padding: 0.0rem .3rem;" class="btn btn-primary btn-sm" onclick="submitRebootForm(this)">REBOOT</button>
@@ -269,7 +269,7 @@
                                 </span> &nbsp;&nbsp;&nbsp;&nbsp;
 								<p class="mining_stats"><b>Hash rate:</b> {{ instance['hash_rate'] }} h/s &nbsp;&nbsp <span style="color: #dc3545;"><b>super:</b></span> {{ instance['super_blocks'] }} &nbsp;&nbsp <span style="color: #28a745;"><b>normal:</b></span> {{ instance['normal_blocks'] }} &nbsp;&nbsp <span style="color: #ffc107;"><b>xuni:</b></span> {{ instance['xuni_blocks'] }}</p>
                             </td>
-                            <td style="width: 20%;">
+                            <td style="width: 23%;">
                                 <strong>Age:</strong> {{ instance['age'] }} <br>
 								<strong>Remaining:</strong> {{ instance['duration'] }}<br>
 								<button type="button" style="padding: 0.0rem .3rem;" class="btn btn-secondary btn-sm" onclick="copyToClipboard('{{ instance['ssh_link'] }}')">COPY SSH COMMAND</button>
@@ -280,7 +280,7 @@
                         <tr>
                             <td style="width: 20%;"><strong>Label:</strong> {{ instance['label'] or 'No Label' }}</td>
                             <td><strong>Status Message:</strong> {{ instance['status_msg'] }}</td>
-                            <td style="width: 20%; text-align: right; font-size:16px"><strong>${{ instance['dph_total'] }}/hr&nbsp&nbsp</strong></td>
+                            <td style="width: 23%; text-align: right; font-size:16px"><strong>${{ instance['dph_total'] }}/hr&nbsp&nbsp</strong></td>
                         </tr>
                     </tbody>
                 </table>
