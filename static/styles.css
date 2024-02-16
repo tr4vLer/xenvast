@@ -1,0 +1,591 @@
+body {
+    padding: 20px;
+}
+
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: relative; /* Set position relative for absolute child positioning */
+    padding-right: 10px; /* Add padding to ensure content is not touching the edges */
+}
+.header-titles {
+    flex-grow: 1;
+}
+
+.moon-icon,
+.wizard-icon,
+.cog-icon {
+    cursor: pointer;
+    margin-left: 10px;
+}
+
+#configWizardModal .modal-dialog {
+    max-width: 950px;
+}
+
+
+#output,
+#perf-bot-output,
+#xuni_farming_output,
+#output_market {
+    white-space: pre-wrap;
+    background-color: #f8f9fa;
+    border: 1px solid #ddd;
+    padding: 10px;
+    margin-top: 20px;
+    height: 300px;
+    overflow-y: scroll;
+	font-family: 'Courier New', Courier, monospace;
+}
+#dust_removal_output,
+#instance-rebuilder-output {
+    white-space: pre-wrap;
+    border: 1px solid #ddd;
+    padding: 10px;
+    margin-top: 20px;
+    height: 200px;
+    overflow-y: scroll;
+	text-align: left;
+	font-size: 15px;
+	font-family: 'Courier New', Courier, monospace;
+}
+
+#status {
+    margin-top: 10px;
+    margin-bottom: 20px;
+}
+
+/* Custom tab styling */
+.nav-tabs .nav-link.active {
+    background-color: #fff;
+    border-color: #ddd #ddd #fff;
+}
+
+#perf-bot-table {
+  border: 2px solid #3498db;
+  border-radius: 5px;
+  padding: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+  overflow-x: auto;
+}
+
+#perf-bot-table table {
+  border-collapse: collapse;
+  width: 80%;
+  background-color: #ffffff;
+}
+
+#perf-bot-table th, #perf-bot-table td {
+  border: 1px solid #dddddd;
+  text-align: center; /* Center text in table cells */
+  padding: 8px;
+}
+
+#perf-bot-table th {
+  background-color: #3498db;
+  color: white;
+  white-space: nowrap;
+}
+
+#perf-bot-table tr:nth-child(even) {
+  background-color: #f2f2f2;
+}
+
+#perf-bot-table tr:hover {
+  background-color: #e2e2e2;
+}
+#perf-bot-table.full-width {
+  width: 100%;
+  max-width: 100%;  
+  overflow-x: visible;
+  box-sizing: border-box;
+}
+
+/* Add this CSS animation code */
+.pointing-arrow-s1 {
+    position: absolute;
+    top: -550px;
+    right: 55px;
+    font-size: 4rem;
+    color: red;
+    transform: rotate(90deg);
+    z-index: 10;
+    animation: moveArrow 2s ease-in-out infinite alternate; /* Animation properties */
+}
+
+.pointing-arrow-s2 {
+    position: absolute;
+    top: -550px;
+    left: 30px;
+    font-size: 4rem;
+    color: red;
+    transform: rotate(90deg);
+    z-index: 10;
+    animation: moveArrow 2s ease-in-out infinite alternate; /* Animation properties */
+}
+
+/* Keyframes for the animation */
+@keyframes moveArrow {
+    0% {
+        transform: rotate(90deg) translateY(0); /* Initial position */
+    }
+    100% {
+        transform: rotate(90deg) translateY(20px); /* Final position (adjust translateY as needed) */
+    }
+}
+
+.key-box {
+    display: inline-block;
+    background-color: #f0f0f0;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    padding: 2px 6px;
+    font-family: monospace;
+    margin: 2px;
+}
+
+/* CSS to align the "X" button */
+td button.btn-danger {
+    vertical-align: middle;
+}
+
+/* Styles for the balance info display */
+.header-info {
+    display: flex;
+    align-items: center;
+}
+
+.balance-info-positioning {
+    margin-right: 20px; /* Add some space between the balance info and the icons */
+    background-color: #f8f9fa; /* Optional: if you want a different background */
+    padding: 5px 10px;
+    border-radius: 15px; /* Rounded corners */
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1); /* Optional: add a subtle shadow */
+    font-size: 1rem;
+    color: #333;
+	cursor: pointer;
+}
+
+.icons {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+}
+
+@media screen and (max-width: 768px) {
+    .header {
+        flex-direction: column;
+        align-items: flex-start; /* Align items to the start on smaller screens */
+    }
+    
+    .header-titles,
+    .header-info {
+        width: 100%; /* Full width on smaller screens */
+    }
+    
+    .balance-info-positioning {
+        order: -1; /* Make the balance info appear above the icons on smaller screens */
+        margin-bottom: 10px; /* Add space below the balance info */
+    }
+    
+    .icons {
+        margin-top: 10px; /* Add space above the icons */
+    }
+}
+
+.header-actions {
+    display: flex;
+    align-items: center;
+}
+
+/* Add this CSS for the centered market-table */
+.market-table {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    padding: 20px;
+}
+
+.market-table table {
+    width: auto;
+    border-collapse: collapse;
+	color: #333;
+}
+
+.market-table th, .market-table td {
+    padding: 10px;
+    text-align: center;
+}
+
+/* Rounded corners for the table */
+.market-table table {
+    border-radius: 15px;
+    background-color: #f8f9fa;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
+}
+
+/* Match content width */
+.market-table th {
+    white-space: nowrap;
+}
+
+.market-table td {
+    width: 1%;
+    white-space: nowrap;
+}
+
+/* Add space between fields */
+.market-table td:not(:last-child) {
+    padding-right: 10px;
+}
+.form-control.narrow-input {
+    width: auto;
+    margin: 0 auto;
+    text-align: center;
+}
+
+.title {
+    font-size: 28px;
+    color: #333;
+    background-color: #fff;
+    padding: 15px;
+    text-align: center;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    margin-bottom: 20px;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.custom-alert {
+        background-color: #006400; /* Dark Green background color */
+        color: #fff; /* Text color */
+        font-weight: bold; /* Bold text */
+		border-color: #218838; /* Border color */
+}
+
+.tool-tile {
+    position: relative;
+    font-size: 18px;
+    color: #FFFFFF;
+    background-color: #2D2D2D;
+    padding: 20px;
+    margin-bottom: 20px;
+    border: 3px solid #17a2b8;
+    border-radius: 5px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+
+.tool-tile2 {
+    background-color: #46464A;
+}
+
+.tool-tile:hover {
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.3);
+    border-color: #138496;
+}
+
+.tool-title {
+    font-size: 33px;
+    color: #FFFFFF;
+    text-align: center;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    margin-bottom: 10px;
+}
+
+.tool-title i {
+    margin-right: 20px; 
+    font-size: 36px; 
+}
+
+.tool-content {
+    display: none;
+    text-align: center;
+    padding-top: 10px;
+}
+
+.donate-container {
+	background: linear-gradient(135deg, #05252B, #8858c1);
+    padding: 40px;
+    border-radius: 10px;
+    box-shadow: 0 4px 15px rgba(0,0,0,.2);
+    color: #fff;
+    max-width: 500px;
+    margin: 20px auto;
+    text-align: center;
+}
+
+.donate-title {
+    margin-bottom: 20px;
+    font-size: 28px;
+}
+
+.donate-description {
+    margin-bottom: 30px;
+    font-size: 16px;
+}
+
+.donate-form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.form-field {
+    position: relative;
+    margin-bottom: 20px;
+    width: 100%;
+}
+
+.form-field i {
+    position: absolute;
+    left: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #fff;
+    font-size: 20px;
+}
+
+.form-field input {
+    width: 100%;
+    padding: 15px 20px 15px 45px;
+    border-radius: 50px;
+    border: none;
+    background-color: rgba(255,255,255,0.2);
+    color: #fff;
+    font-size: 16px;
+    outline: none;
+    transition: background-color 0.3s;
+}
+
+.form-field input::placeholder {
+    color: #eee;
+}
+
+.form-field input:focus {
+    background-color: rgba(255,255,255,0.3);
+}
+
+.donate-button {
+    background-color: #ff7675;
+    color: #fff;
+    border: none;
+    padding: 15px 40px;
+    border-radius: 50px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+}
+
+.donate-button:hover {
+    background-color: #fa5252;
+}
+
+.donate-button i {
+    font-size: 20px;
+}
+
+.donate-alt-method {
+    margin-top: 40px;
+    color: #fff;
+    font-size: 14px;
+}
+
+.eth-address {
+    display: inline-block;
+    background-color: rgba(255, 255, 255, 0.2);
+    border: none;
+    color: #fff; 
+    padding: 5px 10px;
+    border-radius: 5px;
+    font-family: monospace;
+    margin-top: 5px;
+    width: 343px;
+    cursor: pointer; 
+}
+
+.eth-address:focus {
+    outline: none; 
+}
+
+.social-icons {
+    margin-top: 20px;
+    display: flex;
+    justify-content: center;
+}
+
+.social-icon {
+    margin: 0 10px;
+    font-size: 24px;
+    color: #fff;
+    text-decoration: none;
+}
+
+.social-icon:hover {
+    color: #55acee; /* Twitter color */
+}
+
+
+#additional-balance-info {
+    background-color: #e2e2e2; /* Light background for contrast */
+    color: #333; /* Dark text for readability */
+    border-radius: 8px; /* Rounded corners */
+    padding: 20px; /* Increased padding for spacing */
+    box-shadow: none; /* Remove box shadow to avoid nesting */
+    /*line-height: 1.8;  Increase line spacing for readability */
+    /*font-size: 1.2rem;  Larger font size for improved readability */
+    text-align: left; /* Align the text to the left */
+	margin-bottom: 20px;
+}
+
+.mining-container {
+    background: linear-gradient(135deg, #05252B, #8858c1);
+    padding: 40px;
+    border-radius: 10px;
+    box-shadow: 0 4px 15px rgba(0,0,0,.2);
+    color: #fff;
+    max-width: 90%;
+    margin: 20px auto;
+    text-align: center;
+}
+
+.mining-title {
+    margin-bottom: 40px;
+    font-size: 50px;
+    text-transform: uppercase;
+}
+
+.mining-stats {
+    margin-top: 20px;
+    color: #fff;
+    font-size: 16px;
+    text-align: center;
+}
+
+.mining-stats table {
+    margin: 0 auto;
+    border-collapse: collapse;
+    width: 50%;
+}
+
+.mining-stats table td, .mining-stats table th {
+    border: 1px solid #fff;
+    padding: 7px;
+}
+
+.mining-stats table th {
+    background-color: #2e2e2e;
+    color: #fff;
+}
+
+.mining-stats table tr:nth-child(even) {
+    background-color: #464646;
+}
+
+.mining-stats table tr:hover {
+    background-color: #3498db;
+}
+
+.custom-p {
+    display: inline-block;
+    background-color: rgba(255, 255, 255, 0.2);
+    border: none;
+    color: #fff; 
+    padding: 5px 10px;
+    border-radius: 5px;
+    font-family: monospace;
+    margin-top: 5px;
+    cursor: pointer; 
+}
+.mining-info {
+    margin-top: 20px;
+    font-size: 14px;
+    color: #888;
+    text-align: center;
+}
+
+.mining-info a {
+    color: #3498db; /* Link color */
+    text-decoration: none;
+}
+
+.mining-info a:hover {
+    text-decoration: underline; /* Underline on hover */
+}
+.console-button {
+    padding: 10px 15px;
+	margin-bottom: 10px;
+    color: #000;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    font-weight: bold;
+}
+
+.console-button:disabled {
+    cursor: not-allowed;
+    opacity: 0.6;
+}
+
+
+.instances-container {
+    padding: 20px;
+    background-color: #b6b6b6;
+    border-radius: 5px;
+    box-shadow: 5px 3px 10px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
+	font-size: 14px;
+}
+
+.instances-container td {
+	padding: 0.2rem;
+	vertical-align: middle;
+	margin-left: 0px;
+}
+
+.gpu_name_instances {
+	font-family: Roboto, sans-serif;
+    font-size: 44px; 
+    color: #ffffff; 
+	display: flex;
+	align-items: center;
+	height: 11px;
+	margin-top: 20px;
+}
+.mining_stats {
+	font-family: Roboto, sans-serif;
+	margin-top: 20px;
+	height: 0px;
+	font-size: 14px;
+}
+
+
+
+#reboot-instance-form,
+#rebuild-instance-form,
+#destroyForm {
+    display: inline-block;
+    margin-right: 3px; 
+}
+
+  .gpu_status_badge {
+    margin-left: auto;
+    font-size: 60%;
+  }
+
+
+/* not in dark theme!!! */

@@ -1,0 +1,656 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>XENBLOCKS MINER for GPU's rented from Vast.ai!  All in one tool.</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.0/socket.io.js"></script>
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+	<link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}" id="stylesheet">
+	<link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='favicon.ico') }}">
+</head>
+<body data-config-wizard={{ config['CONFIG_WIZARD']|tojson|safe }} data-dark-theme="{{ dark_theme }}">
+<div class="container">
+    <div class="header">
+        <div class="header-titles">
+            <h2>XENBLOCKS MINER for Vast.ai GPU's!</h2>
+            <h5>All in one tool. <b>v0.2</b></h5>
+        </div>
+        <div class="header-info">
+            <div id="balance-info-output" class="balance-info-positioning">Vast.ai credit: $??</div>
+            <div class="icons">
+                <a href="#" class="wizard-icon" onclick="openConfigWizard()">
+                    <i class="fas fa-hat-wizard fa-2x"></i>
+                </a>
+				<a href="#" class="moon-icon" id="theme-toggle">
+					<i class="fas fa-moon fa-2x"></i>
+				</a>
+                <a href="#" class="cog-icon" onclick="openSettingsModal()">
+                    <i class="fas fa-cog fa-2x"></i>
+                </a>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- Display script status box at the top -->
+    <div class="row mt-3">
+        <div class="col-md-12">
+            <div id="status" class="alert alert-success custom-alert">GPU Limit order: Unknown</div>
+			<div id="marketGpuStatus" class="alert alert-success custom-alert">GPU Market order: Unknown</div>
+			<div id="XuniFarmingStatus" class="alert alert-success custom-alert">XUNI farming: Unknown</div>
+        </div>
+    </div>
+
+    <ul class="nav nav-tabs" id="statusTabs">
+	    <li class="nav-item">
+            <a class="nav-link active" data-toggle="tab" href="#marketTab">GPU Market order</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" data-toggle="tab" href="#gpuTab">GPU Limit order</a>
+        </li>
+		<li class="nav-item">
+            <a class="nav-link" data-toggle="tab" href="#instancesTab">Instances</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" data-toggle="tab" href="#performanceTab">Performance</a>
+        </li>
+		<li class="nav-item">
+            <a class="nav-link" data-toggle="tab" href="#xuniTab">XUNI Farming</a>
+        </li>	
+		<li class="nav-item">
+            <a class="nav-link" data-toggle="tab" href="#miningTab">Mining Info</a>
+        </li>	
+        <li class="nav-item">
+            <a class="nav-link" data-toggle="tab" href="#toolsTab">TOOLS</a>
+        </li>		
+        <li class="nav-item">
+            <a class="nav-link" data-toggle="tab" href="#donateTab">Donate <i class="fas fa-heart"></i></a>
+        </li>
+    </ul>
+<div class="tab-content" id="statusTabContent">
+    <div class="tab-pane fade show active" id="marketTab">
+        <div style="margin-top: 20px;"></div>
+        <!-- Warning Box -->
+        <div class="alert alert-danger">
+            <strong> WARNING: </strong>
+			<ol>
+					<li>"GPU's quantity" indicates the <b>total number of GPUs</b> that will be rented at the current cheapest market price.</li>
+					<li>The script calculates the cheapest price based on a single GPU unit. It divides hourly price by the number of GPUs to calculate it.</li>
+			</ol>
+        </div>
+			<div class="alert alert-info">
+                <strong>Notice:</strong>
+                        <ol>
+                            <li>The mining software will automatically install on your machine as soon as Market GPU order is completed.</li>
+                            <li>Your Ethereum address will be configured automatically.</li>
+                            <li>The script monitors various conditions on rented instance. If any condition fails, the machine will be automatically terminated, and a replacement order will be placed simultaneously. This process takes about 10 minutes. Please be patient.</li>
+                            <li>This tool provides touch-free management. You don't need to do anything; the mining software will start automatically when needed.</li>
+                        </ol>	
+				<strong>Unsure about which GPU model to choose?</strong>
+				<p>The RTX 4090 and RTX 3090 represent the best compromise between performance and cost. Start with these.</p>
+            </div>
+        <form id="market-gpu-config">
+			<div class="title">Mine XENBLOCKS Now!</div>
+            <div class="market-table">
+                <table>
+                    <thead>
+                    <tr>
+                        <th>GPU Name</th>
+                        <th>GPU's quantity</th>
+                        <th>Proceed</th>
+                    </tr>
+                    </thead>
+                    <tbody id="gpu-table-body">
+                    <tr>
+                        <td>
+                            <select class="form-control narrow-input" id="gpu-market" name="gpu_market" required value="{{ config['GPU_MARKET'] }}">>
+                                <option value="RTX 4090">RTX 4090</option>
+                                <option value="RTX 3090">RTX 3090</option>
+                                <option value="RTX 3060">RTX 3060</option>
+                                <option value="RTX A6000">RTX A6000</option>
+                                <option value="RTX A5000">RTX A5000</option>
+                                <option value="RTX A4000">RTX A4000</option>
+                                <option value="A40">A40</option>
+                            </select>
+                        </td>
+                        <td><input class="form-control narrow-input" type="number" step="1" id="max-gpu" name="max_gpu" required value="{{ config['MAX_GPU'] }}"></td>
+                        <td>
+							<button type="submit" class="btn btn-primary" onclick="startMarketGpuScript()" id="start-market-gpu-script" disabled>PLACE ORDER</button>
+							<button type="button" class="btn btn-danger ml-2" onclick="stopMarketGpuScript()" id="stop-market-gpu-script" disabled>STOP SCRIPT</button>
+						</td>
+                    </tr>
+                    </tbody>                  
+                </table>
+            </div>
+        </form>
+        <div id="output_market"></div>
+    </div>	
+        <div class="tab-pane fade" id="gpuTab">
+            <div style="margin-top: 20px;"></div>
+            <!-- Warning Box -->
+            <div class="alert alert-danger">
+				<strong> WARNING: </strong>
+			             <ol>
+                            <li>"Total orders to place" indicates the <b>number of instances</b> that will be rented once your specified criteria are met. This applies to all GPU types that you will select.</li>
+                            <li>The Limit price have to be lower than the lowest price currently available in the market. <u>Single GPU price = (total instance price) / (instance gpus)</u></li>
+							<li><b>To update or save the limit price while the script is running, you need to STOP and START the limit search again.</b></li>
+							<li><b>The current market price refreshes every two minutes.</b></li>
+						</ol>	                
+            </div>
+			<div class="alert alert-info">
+                <strong>Notice:</strong>
+                        <ol>
+                            <li>The mining software will automatically install on your machine as soon as Limit GPU order is completed.</li>
+                            <li>Your Ethereum address will be configured automatically.</li>
+                            <li>The script monitors various conditions on rented instance. If any condition fails, the machine will be automatically terminated and black-listed. Be patient. Observe log output for details.</li>
+                            <li>This tool provides touch-free management. You don't need to do anything; the mining software will start automatically when needed.</li>
+                        </ol>	
+				<strong>Unsure about which GPU model to choose?</strong>
+				<p>The RTX 4090 and RTX 3090 represent the best compromise between performance and cost. Start with these.</p>
+            </div>
+            <!-- Form for updating GPU Deals -->
+            <form id="gpu-deals-form">
+                <div class="form-group mt-3">
+				<div class="title">GPU Limit order</div>
+                    <label for="max-orders"><strong>Total orders to place:</strong></label>
+                    <input type="number" class="form-control" id="max-orders" name="max_orders"
+                           required value="{{ config['MAX_ORDERS'] }}">
+                </div>
+                <!-- Add fields for updating GPU_DPH_RATES -->
+                <table class="table table-bordered" id="gpu-table">
+                    <thead>
+                    <tr>
+						<th style="width: 1%;"></th>
+                        <th>GPU Name</th>
+                        <th>Limit price per GPU</th>
+						<th>Lowest Market price per GPU</th>
+                    </tr>
+                    </thead>
+						<tbody id="gpu-table-body">
+							<!-- Loop through GPU_DPH_RATES and create rows -->
+							{% for gpu_name, dph_rate in gpu_dph_rates.items() %}
+							<tr>
+								<td><button type="button" class="btn btn-danger btn-sm" onclick="removeRow(this)">X</button></td>
+								<td>
+									<select class="form-control gpu-dropdown" name="gpu_name[]">
+										<option value="RTX 4090" {% if gpu_name == 'RTX 4090' %}selected{% endif %}>RTX 4090</option>
+										<option value="RTX 3090" {% if gpu_name == 'RTX 3090' %}selected{% endif %}>RTX 3090</option>
+										<option value="RTX 3060" {% if gpu_name == 'RTX 3060' %}selected{% endif %}>RTX 3060</option>
+										<option value="RTX A6000" {% if gpu_name == 'RTX A6000' %}selected{% endif %}>RTX A6000</option>
+										<option value="RTX A5000" {% if gpu_name == 'RTX A5000' %}selected{% endif %}>RTX A5000</option>
+										<option value="RTX A4000" {% if gpu_name == 'RTX A4000' %}selected{% endif %}>RTX A4000</option>
+										<option value="A40" {% if gpu_name == 'A40' %}selected{% endif %}>A40</option>
+									</select>
+								</td>
+								<td>
+									<input type="number" step="0.001" class="form-control" name="dph_rate[]" placeholder="Your Limit price" required value="{{ dph_rate }}">
+								</td>
+								<td>
+									<input type="text" class="form-control market-price" value="{{ CURRENT_MARKET_DPH[gpu_name] }}" disabled>
+								</td>
+							</tr>
+							{% endfor %}
+						</tbody>
+                </table>
+                <button type="button" class="btn btn-primary" onclick="addRow()">Add Row</button>
+
+            <div class="row mt-3">
+                <div class="col-md-12 text-right">
+				<button type="submit"  class="btn btn-primary" onclick="startScript()" id="start-script-button" disabled>START LIMIT SEARCH</button>
+				<button type="button" class="btn btn-danger ml-2" onclick="stopScript()" id="stop-script-button" disabled>STOP LIMIT SEARCH</button>
+                </div>
+            </div>
+			</form>
+            <div id="output"></div>
+        </div>
+		
+		
+<div class="tab-pane fade" id="instancesTab">
+    <div style="margin-top: 20px;">
+		{% if instances %}
+            {% for instance in instances %}
+                <table class="table mb-3" style="margin: 10px auto;">
+                    <tbody class="instances-container">
+                        <!-- 1st Row -->
+                        <tr>
+                            <td style="width: 20%;"><input type="checkbox" name="instance_ids" style="margin-right:10px;" value="{{ instance['instance_id'] }}"><strong>Instance ID:</strong> {{ instance['instance_id'] }}</td>
+                            <td><span style="font-size: 90%;" class="badge {% if instance['verification'] == 'verified' %}badge-success{% else %}badge-warning{% endif %}">{{ instance['verification'] }}</span>&nbsp&nbsp&nbsp<strong>Machine ID:</strong> {{ instance['machine_id'] }}&nbsp&nbsp&nbsp<strong>Host ID:</strong> {{ instance['host_id'] }}&nbsp&nbsp&nbsp<strong>Location:</strong> {{ instance['geolocation'] }}</td>
+							<td style="width: 20%;">
+								<form id="reboot-instance-form">
+									<input type="hidden" id="instance_id_reboot" name="instance_id_reboot" value="{{ instance['instance_id_reboot'] }}">
+									<button type="button" style="padding: 0.0rem .3rem;" class="btn btn-primary btn-sm" onclick="submitRebootForm(this)">REBOOT</button>
+								</form>
+
+								<form id="rebuild-instance-form">
+									<input type="hidden" id="instance_id_rebuild" name="instance_id_rebuild" value="{{ instance['instance_id_rebuild'] }}">
+									<button type="button" style="padding: 0.0rem .3rem;" class="btn btn-warning btn-sm" onclick="submitRebuildForm(this)">REBUILD</button>
+								</form>
+								
+								<form id="destroyForm">
+									<input type="hidden" id="instance_id_destroy" name="instance_id_destroy" value="{{ instance['instance_id_destroy'] }}">
+									<button type="button" style="padding: 0.0rem .3rem;" class="btn btn-danger btn-sm" onclick="submitForm(this)">DESTROY</button>
+								</form>
+							</td>
+                        </tr>
+                        <!-- 2nd Row -->
+                        <tr>
+                            <td style="width: 20%;">
+								<div style="display: flex; align-items: center;">
+									<strong style="margin-right: 5px;">GPU:</strong>
+									<span>{{ instance['gpu_util'] }}%</span>
+									<div class="progress ml-2" style="height: 5px;width: 30%; flex-grow: 1;">
+										<div class="progress-bar bg-primary" role="progressbar" style="width: {{ instance['gpu_util'] }}%;"></div>
+									</div>
+								</div>									
+								<div style="display: flex; align-items: center;">
+									<strong style="margin-right: 5px;">CPU:</strong>
+									<span>{{ instance['cpu_util'] }}%</span>
+									<div class="progress ml-2" style="height: 5px; flex-grow: 1;">
+										<div class="progress-bar bg-success" role="progressbar" style="width: {{ instance['cpu_util'] }}%;"></div>
+									</div>
+								</div>
+								<div style="display: flex; align-items: center;">
+									<strong style="margin-right: 5px;">HDD:</strong>
+									<span>{{ instance['hdd_usage'] }}%</span>
+									<div class="progress ml-2" style="height: 5px; flex-grow: 1;">
+										<div class="progress-bar bg-warning" role="progressbar" style="width: {{ instance['hdd_usage'] }}%;"></div>
+									</div>
+								</div>
+								<strong>VRAM:</strong> {{ instance['gpu_ram_used_gb'] }}GB / {{ instance['gpu_ram_gb'] }}GB 
+                            </td>
+                            <td>
+								<p class="gpu_name_instances">
+								{{ instance['num_gpus'] }}x {{ instance['gpu_name'] }} &nbsp;&nbsp;&nbsp;&nbsp;
+								<span class="badge {% if instance['actual_status'] == 'running' %}badge-success{% elif instance['actual_status'] == 'offline' %}badge-danger{% else %}badge-warning{% endif %} gpu_status_badge">
+									{{ instance['actual_status'] }} 
+                                </span> &nbsp;&nbsp;&nbsp;&nbsp;
+								<p class="mining_stats"><b>Hash rate:</b> {{ instance['hash_rate'] }} h/s &nbsp;&nbsp <span style="color: #dc3545;"><b>super:</b></span> {{ instance['super_blocks'] }} &nbsp;&nbsp <span style="color: #28a745;"><b>normal:</b></span> {{ instance['normal_blocks'] }} &nbsp;&nbsp <span style="color: #ffc107;"><b>xuni:</b></span> {{ instance['xuni_blocks'] }}</p>
+                            </td>
+                            <td style="width: 20%;">
+                                <strong>Age:</strong> {{ instance['age'] }} <br>
+								<strong>Remaining:</strong> {{ instance['duration'] }}<br>
+								<button type="button" style="padding: 0.0rem .3rem;" class="btn btn-secondary btn-sm" onclick="copyToClipboard('{{ instance['ssh_link'] }}')">COPY SSH COMMAND</button>
+                                
+                            </td>
+                        </tr>						
+                        <!-- 3rd Row -->
+                        <tr>
+                            <td style="width: 20%;"><strong>Label:</strong> {{ instance['label'] or 'No Label' }}</td>
+                            <td><strong>Status Message:</strong> {{ instance['status_msg'] }}</td>
+                            <td style="width: 20%; text-align: right; font-size:16px"><strong>${{ instance['dph_total'] }}/hr&nbsp&nbsp</strong></td>
+                        </tr>
+                    </tbody>
+                </table>
+            {% endfor %}
+		{% else %}
+			 <p>No instances available.</p>
+		{% endif %}	 
+    </div>
+</div>
+<script>
+document.getElementById('bulk-action-form').addEventListener('submit', function(e) {
+    e.preventDefault();
+    let checkedInstances = [];
+    let checkboxes = document.querySelectorAll('input[name="instance_ids"]:checked');
+    checkboxes.forEach((checkbox) => {
+        checkedInstances.push(checkbox.value);
+    });
+    console.log(checkedInstances); 
+});
+</script> 
+
+        <div class="tab-pane fade" id="performanceTab">
+            <div style="margin-top: 20px;"></div>
+            <div class="alert alert-info">
+                <strong>Notice:</strong>
+				<ol>
+				<li>Depending on the number of instances in your account, it might take several minutes for the script to complete. Please be patient.</li>
+				<li>If the script is not working for your existing instances, consider rebuilding them using the "Instance rebuilder" available in the TOOLS tab.</li>
+				<li>If getting "Failed to connect Instance ID" this usually means that pacticular instance is not in "running" status.</li>
+				<li><u>To update the performance data in the table, please click the "LOAD PERFORMANCE DATA" button again.</u></li>
+				</ol>
+				<p><strong>Info:</strong> Z-Score is like a red flag for your GPUs, showing which ones aren't doing as well as they should. 
+				It tells you how much a GPU's performance differs from the average. A lower threshold makes it more sensitive to smaller issues. 
+				A default setting of 1 highlights the biggest problems. Change this setting to suit your needs.</p>
+            </div>
+			<div class="title">Performance aggregator</div>
+			        <form id="perf-bot-config">
+            <div class="market-table">
+                <table>
+                    <thead>
+                    <tr>
+						<th>Sort by</th>
+                        <th>Sort order</th>
+                        <th>Z-Score threshold</th>
+                        <th>Proceed</th>
+                    </tr>
+                    </thead>
+                    <tbody id="gpu-table-body">
+                    <tr>
+						<td>
+							<select class="form-control narrow-input" id="sort-column-index" name="sort_column_index" required>
+								<option value="1" {% if config['SORT_COLUMN_INDEX'] == 1 %} selected {% endif %}>GPU Name</option>
+								<option value="2" {% if config['SORT_COLUMN_INDEX'] == 2 %} selected {% endif %}>GPU's</option>
+								<option value="3" {% if config['SORT_COLUMN_INDEX'] == 3 %} selected {% endif %}>Util.%</option>
+								<option value="4" {% if config['SORT_COLUMN_INDEX'] == 4 %} selected {% endif %}>USD/h</option>
+								<option value="5" {% if config['SORT_COLUMN_INDEX'] == 5 %} selected {% endif %}>USD/GPU</option>
+								<option value="6" {% if config['SORT_COLUMN_INDEX'] == 6 %} selected {% endif %}>Inst.H/s</option>
+								<option value="7" {% if config['SORT_COLUMN_INDEX'] == 7 %} selected {% endif %}>GPU H/s</option>
+								<option value="8" {% if config['SORT_COLUMN_INDEX'] == 8 %} selected {% endif %}>XNM Blocks</option>
+								<option value="9" {% if config['SORT_COLUMN_INDEX'] == 9 %} selected {% endif %}>XUNI Blocks</option>
+								<option value="10" {% if config['SORT_COLUMN_INDEX'] == 10 %} selected {% endif %}>Super Blocks</option>
+								<option value="11" {% if config['SORT_COLUMN_INDEX'] == 11 %} selected {% endif %}>Runtime</option>
+								<option value="12" {% if config['SORT_COLUMN_INDEX'] == 12 %} selected {% endif %}>Block/h</option>
+								<option value="13" {% if config['SORT_COLUMN_INDEX'] == 13 %} selected {% endif %}>H/s/USD</option>
+								<option value="14" {% if config['SORT_COLUMN_INDEX'] == 14 %} selected {% endif %}>USD/Block</option>
+								<option value="15" {% if config['SORT_COLUMN_INDEX'] == 15 %} selected {% endif %}>Label</option>
+								<option value="16" {% if config['SORT_COLUMN_INDEX'] == 16 %} selected {% endif %}>CPU %</option>
+								<option value="17" {% if config['SORT_COLUMN_INDEX'] == 17 %} selected {% endif %}>HDD %</option>
+							</select>
+						</td>
+                        <td>
+                            <select class="form-control narrow-input" id="sort-order" name="sort_order" required>
+                                <option value="ascending" {% if config['SORT_ORDER'] == 'ascending' %} selected {% endif %}>Lowest to Highest</option>
+                                <option value="descending" {% if config['SORT_ORDER'] == 'descending' %} selected {% endif %}>Highest to Lowest</option>
+                            </select>
+                        </td>
+                        <td><input class="form-control narrow-input" type="number" step="0.1" id="threshold-perf" name="threshold" required value="{{ config['THRESHOLD'] }}"></td>
+                        <td>
+							<button type="submit" class="btn btn-success" onclick="startPerfBot()">LOAD CURRENT PERFORMANCE DATA</button>
+						</td>
+                    </tr>
+                    </tbody>                  
+                </table>
+            </div>
+        </form>     
+			<div style="margin-top: 20px; text-align: right;">
+				<button id="toggleWidthButton" class="btn btn-primary">Toggle Table to Full Width</button>
+			</div>
+			<div id="perf-bot-table" class="perf-bot-table"></div>
+            <div id="perf-bot-output"></div>
+        </div>
+		
+
+    <div class="tab-pane fade" id="xuniTab">
+        <div style="margin-top: 20px;"></div>
+        <!-- Warning Box -->
+			<div class="alert alert-info">
+                <strong>Notice:</strong>
+						<ol>
+							<li>The XUNI farming tool utilizes the same automations as Market/Limit orders. You don't have to configure anything additionally.</li>
+							<li>The tool will commence at the 53rd minute of every hour to ensure that GPUs are ready when the XUNI window opens.</li>
+							<li>The tool will automatically terminate instances hired by the XUNI farming tool at the 6th minute of each hour.</li>
+							<li>There are limited GPU options available for selection with the XUNI tool to ensure its effectiveness.</li>
+							<li>Instances from certain geolocations have been excluded from this tool.</li>
+							<li>It is recommended to hire a larger number of GPUs to effectively leverage the tool and fully utilize the XUNI time window.</li>
+						</ol>	
+            </div>
+        <form id="xuni-farming-config">
+			<div class="title">XUNI Farming tool</div>
+            <div class="market-table">
+                <table>
+                    <thead>
+                    <tr>
+                        <th>GPU Name</th>
+                        <th>GPU's quantity</th>
+                        <th>Proceed</th>
+                    </tr>
+                    </thead>
+                    <tbody id="gpu-table-body">
+                    <tr>
+                        <td>
+                            <select class="form-control narrow-input" id="xuni-gpu-market" name="xuni_gpu_market" required value="{{ config['XUNI_GPU_MARKET'] }}">>
+                                <option value="RTX 4090">RTX 4090</option>
+                                <option value="RTX A6000">RTX A6000</option>
+                                <option value="RTX A5000">RTX A5000</option>
+                                <option value="A40">A40</option>
+                            </select>
+                        </td>
+                        <td><input class="form-control narrow-input" type="number" step="1" id="xuni-max-gpu" name="xuni_max_gpu" required value="{{ config['XUNI_MAX_GPU'] }}"></td>
+                        <td>
+							<button type="submit" class="btn btn-primary"  onclick="startXuniFarmingScript()" id="start-xuni-farming" disabled>START XUNI FARMING</button>
+							<button type="button" class="btn btn-danger ml-2"  onclick="stopXuniFarmingScript()" id="stop-xuni-farming" disabled>STOP XUNI FARMING</button>
+						</td>
+                    </tr>
+                    </tbody>                  
+                </table>
+            </div>
+        </form>
+        <div id="xuni_farming_output"></div>
+    </div>	
+		<div class="tab-pane fade" id="miningTab">
+			<div style="margin-top: 40px;"></div>
+			<div class="mining-container">
+				<h1 class="mining-title"><i class="fas fa-chart-line"></i> MINING STATS</h1> 
+				<div id="mining-stats" class="mining-stats"></div>
+					<div style="margin-top: 20px;">
+						<img src="{{ url_for('static', filename='metamask_logo.png') }}" alt="MetaMask Logo" class="metamask-logo" style="width: 50px; height: auto; margin-bottom: 10px;"><br>
+						<button id="add-xenium-network" class="console-button">Add XenBlocks Network to MetaMask</button><br>
+						<button id="add-xblk-token" class="console-button">Add X.BLK Token to MetaMask</button><br>
+						<button id="add-xuni-token" class="console-button">Add XUNI Token to MetaMask</button>
+					</div>	
+			</div>
+		</div>
+		<div class="tab-pane fade" id="toolsTab">
+			<div style="margin-top: 30px;"></div>
+			<div class="alert alert-danger">
+				<strong> WARNING: </strong> Read the tool description before use. Proceed with caution.
+			</div>
+		
+			<!-- Tool Tile -->
+			<div class="tool-tile" id="instance-rebuilder-tile">
+				<div class="tool-title"><i class="fas fa-wrench"></i>Instance rebuilder</div>
+				<div class="tool-content">
+					<p>This tool will rebuild your existing instances to provide touchless management.</p>
+					<p>It will generate log file that would work with the script in the Performance tab.</p>
+					<p>Your Ethereum address will be configured automatically.</p>
+					<p>Your instances will get rebooted in the process. This is expected.</p>
+					<p><strong>CAUTION:</strong> This action will stop current miner on your instances!</p>
+		
+					<button id="start-instance-rebuilder-button" class="btn btn-danger">Start Instance Rebuilder</button>
+					<div id="instance-rebuilder-output"></div>
+				</div>
+			</div>
+			<div class="tool-tile tool-tile2">
+				<div class="tool-title"><i class="fas fa-broom"></i>Dust cleaner</div>
+				<div class="tool-content">
+					<p>This tool is meant to delete all stalled instances that are in "Offline", "Scheduling" or "Inactive" status.</p>
+					<p>This is recommended for users who are hiring a large number of GPUs and find manual management too time-consuming.</p>
+        <form id="dust-removal-config">
+            <div class="market-table">
+                <table style="width:60%;" id="click-exception">	
+                    <thead>
+                        <tr>
+							<th></th>
+                            <th>Select instance status types to be deleted</th>
+							<th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>
+                                <label for="status1">SCHEDULING</label>
+                                <input type="checkbox" id="remove-scheduling" name="remove_scheduling" value="{{ config['REMOVE_SCHEDULING'] }}">
+                            </td>
+                            <td>
+                                <label for="status2">INACTIVE/STARTING</label>
+                                <input type="checkbox" id="remove-inactive" name="remove_inactive" value="{{ config['REMOVE_INACTIVE'] }}">
+                            </td>
+                            <td>
+                                <label for="status3">OFFLINE</label>
+                                <input type="checkbox" id="remove-offline" name="remove_offline" value="{{ config['REMOVE_OFFLINE'] }}">
+                            </td>
+                        </tr>
+                    </tbody>	
+                </table>	
+                <button type="submit" id="start-dust-removal-button" class="btn btn-danger">Start Dust Cleaner</button>
+            </div>
+        </form>
+        <div id="dust_removal_output"></div>
+	</div>
+</div>	
+			<!-- Add more tiles as needed -->
+		</div>
+
+<div class="tab-pane fade" id="donateTab">
+	<div style="margin-top: 40px;"></div>
+    <div class="donate-container">
+        <h2 class="donate-title">SUPPORT THIS PROJECT</h2>
+        <p class="donate-description">
+            This tool has been created for the community, for free.<br>If you find it useful and would like to support further project development, any donation is welcome.
+        </p>
+        <p class="donate-instruction">
+            <span style="text-decoration: underline;">Donations are made via Vast.ai funds transfer with no fee.</span><br>Thank you for your support!
+        </p>
+			<form id="donation-form" class="donate-form" action="/donate" method="post">
+				<div class="form-field">
+					<i class="fas fa-dollar-sign"></i>
+					<input type="number" id="donationAmount" name="donation_amount" placeholder="Amount (USD)" required min="1" step="1">
+				</div>
+				<button type="submit" class="donate-button">Donate Now <i class="fas fa-heart"></i></button>
+			</form>
+        <p class="donate-alt-method">
+            Alternatively, you can donate to my Ethereum (ERC20) address: 
+            <input type="text" readonly class="eth-address" value="0x7aeEaB74451ab483dc82199597Fd4261ba0BF499" onclick="this.select();">
+        </p>
+        <div class="social-icons">
+            <a href="https://twitter.com/Joe36527423" target="_blank" class="social-icon">
+                <i class="fab fa-twitter"></i>
+            </a>
+            <a href="https://t.me/acc_telegrm" target="_blank" class="social-icon">
+                <i class="fab fa-telegram"></i>
+            </a>
+        </div>		
+    </div>
+</div>
+
+
+
+</div>
+<!-- Balance info -->
+<div id="balanceModal" class="modal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Balance info</h5>
+                <button type="button" class="close" data-dismiss="modal" onclick="closeBalanceModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+			<div id="additional-balance-info" class="additional-balance-info"></div>
+			<p>If you wish to deposit funds into your account, please use the direct deposit option on the <a href="https://cloud.vast.ai/billing/" target="_blank">Vast.ai</a> website.</p>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Settings Modal -->
+<div id="settingsModal" class="modal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Settings</h5>
+                <button type="button" class="close" data-dismiss="modal" onclick="closeSettingsModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="settings-form">
+                    <div class="form-group">
+                        <label for="api-key">VAST.ai API Key:</label>
+                        <input type="text" class="form-control" id="api-key" name="api_key" value="{{ config['API_KEY'] }}">
+                    </div>
+                    <div class="form-group">
+                        <label for="eth-address">ETH Address:</label>
+                        <input type="text" class="form-control" id="eth-address" name="eth_address" value="{{ config['ETH_ADDRESS'] }}">
+                    </div>
+                    <div class="form-group">
+                        <label for="ssh-key-path">SSH Key Path:</label>
+                        <input type="text" class="form-control" id="ssh-key-path" name="ssh_key_path" value="{{ config.get('PRIVATE_KEY_PATH', 'Path to your SSH key') }}">
+                    </div>
+                    <div class="form-group">
+                        <label for="passphrase">SSH Key Passphrase (optional):</label>
+                        <input type="text" class="form-control" id="passphrase" name="passphrase" value="{{ config.get('PASSPHRASE', 'Optional passphrase') }}">
+                    </div>
+                    <button type="submit" class="btn btn-primary">Save</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Configuration Wizard Modal -->
+<div id="configWizardModal" class="modal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Configuration Wizard</h5>
+                <button type="button" class="close" data-dismiss="modal" onclick="closeConfigWizard()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="wizzard-form">
+                  <div id="iframe_vast"></div>
+
+                    <!-- Step 1 -->
+                    <div id="step1" class="config-step" style="position: relative; padding-top:20px;">
+                        <h3>Step 1: Create Vast.ai account</h3>
+                        <p>Register an account to rent GPUs and start mining XENBLOCKS.</p>
+                        <i class="fas fa-arrow-right pointing-arrow-s1"></i> 
+                        <div class="buttons-section" style="padding-top:40px;">
+                            <button type="button" class="btn btn-primary" onclick="nextStep(1)">Next</button>
+                        </div>
+                    </div>
+
+                    <!-- Step 2 -->
+                    <div id="step2" class="config-step" style="position: relative; padding-top:20px;">
+                        <h3>Step 2: Setup API Key.</h3>
+                        <ol>
+                            <li>Open the drop-down menu and enter "ACCOUNT" section.</li>
+                            <li>Scroll down to "API Keys".</li>
+                            <li>Copy the API key.</li>
+                            <li>Paste copied API key here: <input type="text" class="form-control" id="api-key-wizz" name="api_key" value="{{ config['API_KEY'] }}"></li>
+                        </ol>
+						<i class="fas fa-arrow-right pointing-arrow-s2"></i> 
+                        <div class="buttons-section" style="padding-top:40px;">
+                            <button type="button" class="btn btn-primary" onclick="nextStep(2)">Next</button>
+                            <button type="button" class="btn btn-secondary" onclick="prevStep(2)">Previous</button>
+                        </div>
+                    </div>
+
+                    <!-- Step 3 -->
+                    <div id="step3" class="config-step" style="position: relative; padding-top:20px;">
+                        <h3>Step 3: Setup SSH Key.</h3>
+                        <ol>
+                            <li>Scroll up to "Change SSH Key" box.</li>
+                            <li>Paste your public SSH Key in the box and confirm by clicking the "SET SSH KEY" button.</li>
+                        </ol>
+							<p>If you're not sure whether you already have an SSH Key, click the button below to check.<br>If the SSH Key does not exist, the script will generate it for you.</p>
+							<p>Once ready, copy the SSH Key and paste it into the "Change SSH Key" section, then save by clicking the "SET SSH KEY" button.</p>
+
+                        <button type="button" id="generate-ssh-key-btn" class="btn btn-info">Generate SSH Key</button>
+							<div id="ssh-key-output" style="margin-top: 20px;"></div>
+							<input type="hidden" id="ssh-key-path-wizz" name="ssh_key_path" value="{{ config['PRIVATE_KEY_PATH'] }}">
+						<div class="buttons-section" style="padding-top:40px;">
+                            <button type="button" class="btn btn-primary" onclick="nextStep(3)">Next</button>
+                            <button type="button" class="btn btn-secondary" onclick="prevStep(3)">Previous</button>
+                        </div>
+                    </div>
+
+                    <!-- Step 4 -->
+                    <div id="step4" class="config-step" style="position: relative; padding-top:20px;">
+                        <h3>Step 4: Setup ETH address</h3>
+                        <p>Enter your ETH address here or do it later:</p>
+                        <input type="text" class="form-control" id="eth-address-wizz" name="eth_address" value="{{ config['ETH_ADDRESS'] }}">
+                        <div class="buttons-section" style="padding-top:40px;">
+                            <button type="button" class="btn btn-primary" onclick="prevStep(4)">Previous</button>
+                            <button class="btn btn-success" type="submit">Complete</button>
+                        </div>
+                    </div>
+                </form>  
+            </div>
+        </div>
+    </div>
+</div>
+<script src="{{ url_for('static', filename='js_app.js') }}"></script>
+<script src="{{ url_for('static', filename='js_metamask.js') }}"></script>
+</body>
+</html>
+
