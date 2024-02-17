@@ -100,6 +100,8 @@ XENBLOCKS Mining Toolbox offers:
 The instance tab provides you with basic information regarding the machines you are renting. You can see the resource usage, machine IDs, GPU names, and the number of GPUs for each instance. It also identifies if an instance is running and provides the current status. Additionally, it provides users with the possibility to perform basic tasks like reboot, rebuild, and destroy.
 
 The rebuild function is mainly intended for users who already own instances and want to rebuild them to obtain fully automated machines that do not require any manual attention or interactions. It can also be used to rebuild instances with different ETH addresses.
+
+The Instances tab also provides information about Hash speed and mined blocks. Please note that this information comes from the performance bot and is updated every 5 minutes.
 <!-- Separator Line -->
 <hr>
 
