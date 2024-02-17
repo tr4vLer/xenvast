@@ -1,3 +1,5 @@
+# XENBLOCKS Mining Toolbox by tr4vler
+
 # macOS
 ```bash
 sudo apt update && sudo apt -y install wget && sudo wget https://raw.githubusercontent.com/tr4vLer/xenvast/main/autostart.sh && sudo chmod +x autostart.sh && sudo ./autostart.sh
