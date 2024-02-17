@@ -70,6 +70,8 @@ XENBLOCKS Mining Toolbox offers:
 -  **Handling Instances:** If a GPU rental (an "instance") isn't functioning properly—perhaps it's not operating correctly or isn't utilized adequately—the script will terminate the rental. Additionally, it places certain machine IDs on a blacklist to prevent renting it again.
 -  **Repeating the Process:** The script keeps searching for, renting, and monitoring GPUs until it's rented the number of GPUs you specified in the "GPU’s quantity" box.
 -  **Finishing Up:** Once the script has rented and successfully set up the desired number of GPUs, it stops running and logs that it's done. The entire process might take 10 minutes or more, depending on the specified amount and machine condition.
+<!-- Separator Line -->
+<hr>
 
 ![image](https://github.com/tr4vLer/xenvast/assets/149298759/c9d12799-8822-4b60-9a37-4198e9f54510)
 ### Limit Order workflow:
@@ -80,6 +82,8 @@ XENBLOCKS Mining Toolbox offers:
 - **Threading for Efficiency:** The script utilizes threading to handle multiple rental and monitoring processes concurrently, improving efficiency by parallelizing tasks.
 - **Order Limit Handling:** The script keeps track of successful orders and stops renting GPUs once the maximum order limit for instances is reached. Please note that this limit refers to the number of **instances**, not the total number of GPUs, as in the Market Order. This approach maximizes the opportunity hunt to its fullest potential.
 - **Script Completion:** Once the script has reached the maximum order limit or encountered errors, it finishes execution and logs the completion status.
+<!-- Separator Line -->
+<hr>
 
 ![image](https://github.com/tr4vLer/xenvast/assets/149298759/4ac8f522-3d93-4989-80a5-6bfc0602943c)
 ### XUNI Farming workflow:
@@ -88,9 +92,13 @@ XENBLOCKS Mining Toolbox offers:
 - **Order Limit Handling:** The script keeps track of successful GPU orders and stops renting GPUs once the maximum order limit for instances is reached.
 - **XUNI Instance Destruction:** After the XUNI time window, which occurs at the 6th minute of each hour, the script destroys the rented instances used for farming to ensure resource optimization.
 -  **Repeating the Process:** The script continues to repeat all of the above steps until it is manually stopped.
+<!-- Separator Line -->
+<hr>
 
 ![image](https://github.com/tr4vLer/xenvast/assets/149298759/f4360c62-2b09-4745-98c9-afc8bb688d23)
 ### Instances tab
 The instance tab provides you with basic information regarding the machines you are renting. You can see the resource usage, machine IDs, GPU names, and the number of GPUs for each instance. It also identifies if an instance is running and provides the current status. Additionally, it provides users with the possibility to perform basic tasks like reboot, rebuild, and destroy.
 
 The rebuild function is mainly intended for users who already own instances and want to rebuild them to obtain fully automated machines that do not require any manual attention or interactions. It can also be used to rebuild instances with different ETH addresses.
+<!-- Separator Line -->
+<hr>
