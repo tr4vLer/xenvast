@@ -60,4 +60,16 @@ XENBLOCKS Mining Toolbox offers:
 
 ## Usage
 
+![image](https://github.com/tr4vLer/xenvast/assets/149298759/34897955-429f-4cba-926c-3b741fd25f0a)
+### Market Order workflow:
+- **Searching for GPUs:** The script scans the market for available GPUs that match your specified criteria.
+- **Ordering GPUs:** Once suitable GPUs are found, the script attempts to rent them based on their individual unit costs and your requirements.
+  - *Single GPU price = (total instance price) / (instance gpus)*
+- **Monitoring:** After renting a GPU, the script continuously monitors its performance to ensure it's functioning correctly and being utilized effectively. If any issues arise, the script ceases rental and seeks alternative options.
+- **Efficient Threading:** Utilizes threading to concurrently monitor multiple GPUs, maintaining efficiency without compromising performance.
+- **Handling Instances:** If a rented GPU instance malfunctions or is underutilized, the script terminates the rental and adds the corresponding machine ID to a blacklist to prevent future rentals.
+- **Automated Repetition:** The script iterates through the process of searching, renting, and monitoring GPUs until the specified quantity is reached.
+- **Completion Notification:** Upon successfully renting and setting up the desired number of GPUs, the script concludes its operation, providing a log of completion. The duration of this process varies but may take 10 minutes or more, depending on specified parameters and machine conditions.
+
+
 
