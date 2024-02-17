@@ -71,5 +71,20 @@ XENBLOCKS Mining Toolbox offers:
 -  **Repeating the Process:** The script keeps searching for, renting, and monitoring GPUs until it's rented the number of GPUs you specified in the "GPU’s quantity" box.
 -  **Finishing Up:** Once the script has rented and successfully set up the desired number of GPUs, it stops running and logs that it's done. The entire process might take 10 minutes or more, depending on the specified amount and machine condition.
 
+![image](https://github.com/tr4vLer/xenvast/assets/149298759/c9d12799-8822-4b60-9a37-4198e9f54510)
+### Limit Order workflow:
+- **GPU Searching:** The script searches through GPUs available on the market based on predefined criteria such as GPU name and the hourly cost that you are willing to pay ("Limit price per GPU"). It will not place any orders until an offer that meets your criteria is found. Similarly to Market Order script calculates chepest offers using same formula; Single GPU price = (total instance price) / (instance gpus)
+- **Order Placement:** Upon finding suitable GPU offers, the script attempts to place orders for them. It determines the Docker image version based on CUDA compatibility and sends a request to the API to initiate the rental process.
+- **Instance Monitoring:** After placing an order, the script monitors the rented GPU instances to ensure they are running and utilized properly. It checks for GPU utilization and DPH (Dollar Per Hour) rates to verify successful operation.
+- **Instance Destruction:** If a rented instance fails to meet requirements within a specified timeout period, the script terminates the rental and adds the machine ID to the ignore list to prevent future rentals.
+- **Threading for Efficiency:** The script utilizes threading to handle multiple rental and monitoring processes concurrently, improving efficiency by parallelizing tasks.
+- **Order Limit Handling:** The script keeps track of successful orders and stops renting GPUs once the maximum order limit for instances is reached. Please note that this limit refers to the number of **instances**, not the total number of GPUs, as in the Market Order. This approach maximizes the opportunity hunt to its fullest potential.
+- **Script Completion:** Once the script has reached the maximum order limit or encountered errors, it finishes execution and logs the completion status.
 
-
+![image](https://github.com/tr4vLer/xenvast/assets/149298759/4ac8f522-3d93-4989-80a5-6bfc0602943c)
+### XUNI Farming workflow:
+- **XUNI Time Window Handling:** The script waits for a specific time window (the 53rd minute of every hour) to ensure GPUs are ready and start XUNI farming at 55th minute of each hour.
+- **GPU Searching:** The script searches for available GPUs on the market based on predefined GPU names. It utilizes the Market Order mechanism to place orders; however, it only performs one round of condition checks. If any of these checks fail, the subsequent order will not be placed due to the limited time window.
+- **Order Limit Handling:** The script keeps track of successful GPU orders and stops renting GPUs once the maximum order limit for instances is reached.
+- **XUNI Instance Destruction:** After the XUNI time window, which occurs at the 6th minute of each hour, the script destroys the rented instances used for farming to ensure resource optimization.
+-  **Repeating the Process:** The script continues to repeat all of the above steps until it is manually stopped.
