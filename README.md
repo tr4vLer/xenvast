@@ -73,8 +73,8 @@ XENBLOCKS Mining Toolbox offers:
 <!-- Separator Line -->
 <hr>
 
-![image](https://github.com/tr4vLer/xenvast/assets/149298759/c9d12799-8822-4b60-9a37-4198e9f54510)
 ### Limit Order workflow:
+![image](https://github.com/tr4vLer/xenvast/assets/149298759/c9d12799-8822-4b60-9a37-4198e9f54510)
 - **GPU Searching:** The script searches through GPUs available on the market based on predefined criteria such as GPU name and the hourly cost that you are willing to pay ("Limit price per GPU"). It will not place any orders until an offer that meets your criteria is found. Similarly to Market Order script calculates chepest offers using same formula; Single GPU price = (total instance price) / (instance gpus)
 - **Order Placement:** Upon finding suitable GPU offers, the script attempts to place orders for them. It determines the Docker image version based on CUDA compatibility and sends a request to the API to initiate the rental process.
 - **Instance Monitoring:** After placing an order, the script monitors the rented GPU instances to ensure they are running and utilized properly. It checks for GPU utilization and DPH (Dollar Per Hour) rates to verify successful operation.
@@ -85,8 +85,8 @@ XENBLOCKS Mining Toolbox offers:
 <!-- Separator Line -->
 <hr>
 
-![image](https://github.com/tr4vLer/xenvast/assets/149298759/4ac8f522-3d93-4989-80a5-6bfc0602943c)
 ### XUNI Farming workflow:
+![image](https://github.com/tr4vLer/xenvast/assets/149298759/4ac8f522-3d93-4989-80a5-6bfc0602943c)
 - **XUNI Time Window Handling:** The script waits for a specific time window (the 53rd minute of every hour) to ensure GPUs are ready and start XUNI farming at 55th minute of each hour.
 - **GPU Searching:** The script searches for available GPUs on the market based on predefined GPU names. It utilizes the Market Order mechanism to place orders; however, it only performs one round of condition checks. If any of these checks fail, the subsequent order will not be placed due to the limited time window.
 - **Order Limit Handling:** The script keeps track of successful GPU orders and stops renting GPUs once the maximum order limit for instances is reached.
@@ -95,10 +95,12 @@ XENBLOCKS Mining Toolbox offers:
 <!-- Separator Line -->
 <hr>
 
-![image](https://github.com/tr4vLer/xenvast/assets/149298759/f4360c62-2b09-4745-98c9-afc8bb688d23)
 ### Instances tab
+![image](https://github.com/tr4vLer/xenvast/assets/149298759/f4360c62-2b09-4745-98c9-afc8bb688d23)
 The instance tab provides you with basic information regarding the machines you are renting. You can see the resource usage, machine IDs, GPU names, and the number of GPUs for each instance. It also identifies if an instance is running and provides the current status. Additionally, it provides users with the possibility to perform basic tasks like reboot, rebuild, and destroy.
 
 The rebuild function is mainly intended for users who already own instances and want to rebuild them to obtain fully automated machines that do not require any manual attention or interactions. It can also be used to rebuild instances with different ETH addresses.
 <!-- Separator Line -->
 <hr>
+
+### Performance tab
