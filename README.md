@@ -62,14 +62,14 @@ XENBLOCKS Mining Toolbox offers:
 
 ![image](https://github.com/tr4vLer/xenvast/assets/149298759/34897955-429f-4cba-926c-3b741fd25f0a)
 ### Market Order workflow:
-- **Searching for GPUs:** The script scans the market for available GPUs that match your specified criteria.
-- **Ordering GPUs:** Once suitable GPUs are found, the script attempts to rent them based on their individual unit costs and your requirements.
-  - *Single GPU price = (total instance price) / (instance gpus)*
-- **Monitoring:** After renting a GPU, the script continuously monitors its performance to ensure it's functioning correctly and being utilized effectively. If any issues arise, the script ceases rental and seeks alternative options.
-- **Efficient Threading:** Utilizes threading to concurrently monitor multiple GPUs, maintaining efficiency without compromising performance.
-- **Handling Instances:** If a rented GPU instance malfunctions or is underutilized, the script terminates the rental and adds the corresponding machine ID to a blacklist to prevent future rentals.
-- **Automated Repetition:** The script iterates through the process of searching, renting, and monitoring GPUs until the specified quantity is reached.
-- **Completion Notification:** Upon successfully renting and setting up the desired number of GPUs, the script concludes its operation, providing a log of completion. The duration of this process varies but may take 10 minutes or more, depending on specified parameters and machine conditions.
+•  Searching for GPUs: The script is looking for GPUs that are available for rent on the market and match the specific type you're looking for.
+•  Ordering GPUs: When it finds matching GPUs, the script will try to rent them. It decides which ones to rent based on single GPU unit cost* and whether they meet your needs. 
+*Single GPU price = (total instance price) / (instance gpus)
+•  Monitoring: After renting a GPU, the script keeps an eye on it to make sure it's working correctly. It checks to see if the GPU is running and being used as expected. If a GPU isn't working right, the script will stop renting it and look for another.
+•  Threading for Efficiency: The script uses something called "threading" to monitor multiple GPUs at once without getting slowed down. This means it can keep track of several rented GPUs simultaneously, making sure they're all working as they should.
+•  Handling Instances: If a GPU rental (an "instance") isn't functioning properly—perhaps it's not operating correctly or isn't utilized adequately—the script will terminate the rental. Additionally, it places certain machine IDs on a blacklist to prevent renting them again.
+•  Repeating the Process: The script keeps searching for, renting, and monitoring GPUs until it's rented the number of GPUs you specified in the GPU’s quantity box.
+•  Finishing Up: Once the script has rented and successfully set up the desired number of GPUs, it stops running and logs that it's done. The entire process might take 10 minutes or more, depending on the specified amount and machine condition.
 
 
 
