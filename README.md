@@ -60,8 +60,8 @@ XENBLOCKS Mining Toolbox offers:
 
 ## Usage
 
+### Market Order workflow
 ![image](https://github.com/tr4vLer/xenvast/assets/149298759/34897955-429f-4cba-926c-3b741fd25f0a)
-### Market Order workflow:
 -  **Searching for GPUs:** The script is looking for GPUs that are available for rent on the market and match the specific type ("GPU name") you're looking for.
 -  **Ordering GPUs:** When it finds matching GPUs, the script will try to rent them. It decides which ones to rent based on single GPU unit cost* and whether they meet your needs. 
    _*Single GPU price = (total instance price) / (instance gpus)_
@@ -73,7 +73,7 @@ XENBLOCKS Mining Toolbox offers:
 <!-- Separator Line -->
 <hr>
 
-### Limit Order workflow:
+### Limit Order workflow
 ![image](https://github.com/tr4vLer/xenvast/assets/149298759/c9d12799-8822-4b60-9a37-4198e9f54510)
 - **GPU Searching:** The script searches through GPUs available on the market based on predefined criteria such as GPU name and the hourly cost that you are willing to pay ("Limit price per GPU"). It will not place any orders until an offer that meets your criteria is found. Similarly to Market Order script calculates chepest offers using same formula; Single GPU price = (total instance price) / (instance gpus)
 - **Order Placement:** Upon finding suitable GPU offers, the script attempts to place orders for them. It determines the Docker image version based on CUDA compatibility and sends a request to the API to initiate the rental process.
@@ -85,7 +85,7 @@ XENBLOCKS Mining Toolbox offers:
 <!-- Separator Line -->
 <hr>
 
-### XUNI Farming workflow:
+### XUNI Farming workflow
 ![image](https://github.com/tr4vLer/xenvast/assets/149298759/4ac8f522-3d93-4989-80a5-6bfc0602943c)
 - **XUNI Time Window Handling:** The script waits for a specific time window (the 53rd minute of every hour) to ensure GPUs are ready and start XUNI farming at 55th minute of each hour.
 - **GPU Searching:** The script searches for available GPUs on the market based on predefined GPU names. It utilizes the Market Order mechanism to place orders; however, it only performs one round of condition checks. If any of these checks fail, the subsequent order will not be placed due to the limited time window.
