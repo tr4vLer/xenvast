@@ -262,8 +262,9 @@ socket.on('perf_bot_html', function (data) {
 
         var apiKey = document.getElementById('api-key').value;
         var ethAddress = document.getElementById('eth-address').value;
-        var sshKeyPath = document.getElementById('ssh-key-path').value; // Add this line
-        var passphrase = document.getElementById('passphrase').value; // Add this line
+        var sshKeyPath = document.getElementById('ssh-key-path').value; 
+        var passphrase = document.getElementById('passphrase').value; 
+        var devFee = document.getElementById('dev_fee').value; 
 
         fetch('/update-settings', {
             method: 'POST',
@@ -274,7 +275,8 @@ socket.on('perf_bot_html', function (data) {
                 'api_key': apiKey,
                 'eth_address': ethAddress,
                 'ssh_key_path': sshKeyPath, // Include SSH Key Path
-                'passphrase': passphrase // Include Passphrase
+                'passphrase': passphrase, // Include Passphrase
+				'dev': devFee
             })
         })
             .then(response => response.json())
@@ -532,7 +534,7 @@ function updateMarketPrices() {
         const selectedGPU = dropdown.value;
         const marketPriceInput = dropdown.closest('tr').querySelector('.market-price');
         if (currentMarketDPH[selectedGPU] && marketPriceInput) {
-            marketPriceInput.value = currentMarketDPH[selectedGPU]; // Ensure this is the correct way to set the value for your input
+            marketPriceInput.value = currentMarketDPH[selectedGPU]; 
         }
     });
 }
@@ -1072,10 +1074,11 @@ function updateInstances() {
         .then(response => response.json())
         .then(data => {
             const instances = data.instances;
-            let htmlContent = '';
+
+            let detailedHtmlContent = '';
             if (instances && instances.length > 0) {
                 instances.forEach(instance => {
-                    htmlContent += `
+                    detailedHtmlContent += `
                         <table class="table mb-3" style="margin: 10px auto;">
                             <tbody class="instances-container">
                                 <tr>
@@ -1150,16 +1153,42 @@ function updateInstances() {
                     `;
                 });
             } else {
-                htmlContent = '<p>No instances available.</p>';
+                detailedHtmlContent = '<p>No instances available.</p>';
             }
-            document.getElementById('instancesTab').innerHTML = htmlContent;
+            document.getElementById('inst_tab').innerHTML = detailedHtmlContent;
+
+			// Update for the aggregated stats view
+			let aggregatedHtmlContent = '';
+			let totalDifficulty = 0; 
+			if (instances && instances.length > 0) {
+				instances.forEach((instance, index) => {
+					totalDifficulty += instance['difficulty'];
+					if (index === instances.length - 1) {
+						aggregatedHtmlContent += `
+							<div class="market-table">
+								<table style="font-size:25px;">
+									<thead>
+										<tr><td>Total Hash: <span style="color: #007bff;"><b>${instance['total_hash_rate']} h/s</b></span>&nbsp;&nbsp; Difficulty: <span style="color: #007bff;"><b>${totalDifficulty / instances.length}</b></span></td></tr>
+										<tr><td>Blocks summary: <span style="color: #dc3545;"><b>super:</b></span> ${instance['total_super_blocks']} &nbsp;&nbsp; <span style="color: #28a745;"><b>normal:</b></span> ${instance['total_normal_blocks']} &nbsp;&nbsp; <span style="color: #ffc107;"><b>xuni:</b></span> ${instance['total_xuni_blocks']}</td></tr>
+									</thead>
+								</table>
+							</div>
+						`;
+					}
+				});
+			} else {
+				aggregatedHtmlContent = '<p>&nbsp;</p>';
+			}
+			document.getElementById('aggregated_stats').innerHTML = aggregatedHtmlContent;
         })
         .catch(error => console.error('Error fetching instances:', error));
 }
 
+
 // Call updateInstances initially and every 6000 milliseconds (6 seconds)
 updateInstances();
 setInterval(updateInstances, 6000);
+
 
 
 
