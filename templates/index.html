@@ -209,7 +209,25 @@
 		
 		
 <div class="tab-pane fade" id="instancesTab">
-    <div style="margin-top: 20px;">
+	<div id="aggregated_stats">
+		{% if instances %}
+			{% for instance in instances %}
+				{% if loop.last %}
+					<div class="market-table">
+						<table style="font-size:25px;">
+							<thead>
+								<tr><td>Total Hash: <span style="color: #007bff;"><b>{{ instance['total_hash_rate'] }} h/s</b></span>&nbsp;&nbsp Difficulty: <span style="color: #007bff;"><b>{{ instance['difficulty'] }}</b></span></td></tr>								
+								<tr><td>Blocks summary: <span style="color: #dc3545;"><b>super:</b></span> {{ instance['total_super_blocks'] }} &nbsp;&nbsp <span style="color: #28a745;"><b>normal:</b></span> {{ instance['total_normal_blocks'] }} &nbsp;&nbsp <span style="color: #ffc107;"><b>xuni:</b></span> {{ instance['total_xuni_blocks'] }}</td></tr>
+							</thead>                
+						</table>
+					</div>
+				{% endif %}
+			{% endfor %}
+		{% else %}
+			<p>&nbsp;</p> 
+		{% endif %}
+	</div>
+    <div id="inst_tab">
 		{% if instances %}
             {% for instance in instances %}
                 <table class="table mb-3" style="margin: 10px auto;">
@@ -570,6 +588,17 @@ document.getElementById('bulk-action-form').addEventListener('submit', function(
                     <div class="form-group">
                         <label for="passphrase">SSH Key Passphrase (optional):</label>
                         <input type="text" class="form-control" id="passphrase" name="passphrase" value="{{ config.get('PASSPHRASE', 'Optional passphrase') }}">
+                    </div>
+                    <div class="form-group">
+                        <label for="dev_fee">DEVfee:</label>&nbsp;&nbsp;
+                            <select id="dev_fee" name="dev_fee" required value="{{ config['DEV'] }}">>
+                                <option value="50">5%</option>
+                                <option value="60">6%</option>
+                                <option value="70">7%</option>
+                                <option value="80">8%</option>
+								<option value="90">9%</option>
+								<option value="100">10%</option>
+                            </select>                        
                     </div>
                     <button type="submit" class="btn btn-primary">Save</button>
                 </form>
