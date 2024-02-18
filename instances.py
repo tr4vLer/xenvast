@@ -47,12 +47,19 @@ class DateTimeEncoder(json.JSONEncoder):
             return o.isoformat()
         return super().default(o)
 
+total_super_blocks = 0
+total_normal_blocks = 0
+total_xuni_blocks = 0
+total_hash_rate = 0 
 def instance_list():
+    global total_super_blocks, total_normal_blocks, total_xuni_blocks, total_hash_rate
     """Function to list instances and get SSH information."""
     url = f'https://console.vast.ai/api/v0/instances/?api_key={api_key}'
     headers = {'Accept': 'application/json'}
     instances = [] 
     table_perf_data = load_table_perf()
+ 
+    
     for attempt in range(3):  # Retrying up to 3 times
         try:
             response = requests.get(url, headers=headers)
@@ -62,10 +69,19 @@ def instance_list():
                     logging.error("'instances' key not found in response. Please check the API documentation for the correct structure.")
                     return 
                 instances_data = response_json['instances']
-
+                 
                 for instance_data in instances_data:
                     ssh_link = f"ssh -p {instance_data.get('ssh_port', 'N/A')} root@{instance_data.get('ssh_host', 'N/A')} -L 8080:localhost:8080"
                     matching_entry = next((item for item in table_perf_data if item.get('ssh_link', 'N/A') == ssh_link), None)
+                    if matching_entry:
+                        total_super_blocks += int(matching_entry.get('super_blocks', 0))
+                        total_normal_blocks += int(matching_entry.get('normal_blocks', 0))
+                        total_xuni_blocks += int(matching_entry.get('xuni_blocks', 0))
+                        total_hash_rate += float(matching_entry.get('hash_rate', 0.0))   
+                        total_hash_rate = round(total_hash_rate, 2)
+                        difficulty = matching_entry.get('difficulty',0)
+
+                    
                     actual_status = instance_data.get('actual_status', 'N/A')
                     if actual_status != 'running':
                         gpu_util = 'N/A'
@@ -190,7 +206,12 @@ def instance_list():
                         'super_blocks': matching_entry.get('super_blocks', 'N/A') if matching_entry else 'N/A',
                         'normal_blocks': matching_entry.get('normal_blocks', 'N/A') if matching_entry else 'N/A',
                         'xuni_blocks': matching_entry.get('xuni_blocks', 'N/A') if matching_entry else 'N/A',
-                        'hash_rate': matching_entry.get('hash_rate', 'N/A') if matching_entry else 'N/A'
+                        'hash_rate': matching_entry.get('hash_rate', 'N/A') if matching_entry else 'N/A',
+                        'total_super_blocks': total_super_blocks,
+                        'total_normal_blocks': total_normal_blocks,
+                        'total_xuni_blocks': total_xuni_blocks,
+                        'total_hash_rate': total_hash_rate,
+                        'difficulty': difficulty
                     }
                     
                     instances.append(instance)
@@ -224,6 +245,7 @@ def instance_list():
 
 if __name__ == "__main__":
     instances = instance_list()
+    print(f"Stats: {total_hash_rate}h/s, normal:{total_normal_blocks}, super:{total_super_blocks}, xuni:{total_xuni_blocks} ")
     if instances:
         for instance in instances:
             print("Instance ID:", instance['instance_id'])

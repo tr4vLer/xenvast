@@ -43,6 +43,7 @@ perf_bot_running = False
 instances_cache = None
 last_modified_time = 0
 
+
 # Function to load instances from instances.json
 def load_instances():
     global instances_cache, last_modified_time
@@ -191,12 +192,7 @@ def update_settings():
     eth_address = request.form.get('eth_address')
     ssh_key_path = request.form.get('ssh_key_path')  # Get the SSH Key path
     passphrase = request.form.get('passphrase')  # Get the Passphrase
-    
-    # Debugging
-    print("Received API Key:", api_key)
-    print("Received ETH Address:", eth_address)
-    print("Received SSH Key Path:", ssh_key_path)
-    print("Received Passphrase:", passphrase)
+    dev = request.form.get('dev')
 
     if api_key is not None:
         config['API_KEY'] = api_key
@@ -206,6 +202,12 @@ def update_settings():
         config['PRIVATE_KEY_PATH'] = ssh_key_path  # Update the SSH Key path
     if passphrase is not None:
         config['PASSPHRASE'] = passphrase  # Update the Passphrase
+    if dev is not None:
+        try:
+            dev = int(dev)
+        except ValueError:
+            return jsonify({'error': 'Invalid dev value. Must be an integer.'}), 400
+        config['DEV'] = dev
     
     save_config(config)
     return jsonify({'status': 'Settings updated'})
@@ -590,5 +592,5 @@ def rebuild_link():
 
 
 if __name__ == '__main__':
-    socketio.run(app, host='0.0.0.0', port=4999, debug=False, allow_unsafe_werkzeug=True)
+    socketio.run(app, host='0.0.0.0', port=4999, debug=True, allow_unsafe_werkzeug=True)
 

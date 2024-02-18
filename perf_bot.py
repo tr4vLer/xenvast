@@ -204,7 +204,8 @@ def get_log_info(ssh_host, ssh_port, username, private_key_path, passphrase=None
                 'super_blocks': super_blocks,
                 'normal_blocks': normal_blocks,
                 'xuni_blocks': xuni_blocks,
-                'hash_rate': hash_rate
+                'hash_rate': hash_rate,
+                'difficulty': difficulty
             })
             return hours, minutes, seconds, super_blocks, normal_blocks, xuni_blocks, hash_rate, difficulty
         else:
