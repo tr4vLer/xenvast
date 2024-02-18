@@ -20,6 +20,7 @@
     "ETH_ADDRESS": "",
     "PRIVATE_KEY_PATH": "",
     "PASSPHRASE": "",
+    "DEV": 60,
     "IGNORE_MACHINE_IDS": [
         184
     ],
