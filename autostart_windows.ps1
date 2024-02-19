@@ -47,17 +47,11 @@ choco install python git -y
 # Wait for installations to complete
 Start-Sleep -Seconds 3
 
-# Add Python directory to PATH
-$pythonPath = "C:/Python312"
-[Environment]::SetEnvironmentVariable("Path", "$env:Path;$pythonPath", "User")
-
-# Add DOSKEY alias for python3
-doskey python3=C:\Python312\python.exe
+# Proceed with the rest of the script
 
 # Install Python packages
 Write-Host "Installing Python packages..."
 pip install requests eth-utils paramiko prettytable flask flask-socketio Flask-Bootstrap "eth-hash[pycryptodome]" numpy
-
 
 # Clone the repository and build the project
 Write-Host "Cloning the repository and building the project..."
@@ -80,7 +74,14 @@ $Shortcut.Save()
 
 Write-Host "Desktop shortcut created successfully."
 
-# Run the application
-Start-Process "powershell.exe" -ArgumentList "-NoExit -Command Set-Location '$XENVAST_DIR'; python app.py; Start-Sleep -Seconds 2; Start-Process 'http://127.0.0.1:4999'"
+# Define the alias
+function Set-Python3Alias {
+    Set-Alias -Name python3 -Value "C:\Python312\python.exe"
+}
 
+# Call the function to set the alias
+Set-Python3Alias
+
+# Run the application
+Start-Process "powershell.exe" -ArgumentList "-NoExit -Command Set-Location '$XENVAST_DIR'; python3 app.py; Start-Sleep -Seconds 2; Start-Process 'http://127.0.0.1:4999'"
 Write-Host "Installation complete."
