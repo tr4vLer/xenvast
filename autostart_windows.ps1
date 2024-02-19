@@ -72,7 +72,7 @@ $Shortcut = $WScriptShell.CreateShortcut("$([System.Environment]::GetFolderPath(
 # Set the properties of the shortcut if the shortcut object is valid
 $Shortcut.TargetPath = "cmd.exe"
 $Shortcut.TargetPath = "powershell.exe"
-$Shortcut.Arguments = "Set-Location '$XENVAST_DIR'; -ExecutionPolicy Bypass -File `"$XENVAST_DIR\start_app.ps1`""
+$Shortcut.Arguments = "Set-Location '$XENVAST_DIR'; -ExecutionPolicy Bypass -File 'start_app.ps1'"
 $Shortcut.IconLocation = "$XENVAST_DIR\static\logo.ico"
 $Shortcut.Save()
 
