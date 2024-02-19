@@ -33,8 +33,7 @@ SEARCH_CRITERIA = {
     "rentable": {"eq": True},
     "gpu_name": {"in": list(CURRENT_MARKET_DPH.keys())}, 
     "cuda_max_good": {"gte": 11},
-    "type": "on-demand",
-    "intended_status": "running"
+    "type": "on-demand"
 }
 
 
