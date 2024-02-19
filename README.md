@@ -30,7 +30,7 @@ sudo apt update && sudo apt -y install wget && sudo wget https://raw.githubuserc
 sudo apt update && sudo apt -y install wget && sudo wget https://raw.githubusercontent.com/tr4vLer/xenvast/main/autostart_linux.sh && sudo chmod +x autostart_linux.sh && ./autostart_linux.sh
 ```
 
-**Windows** **(run PowerShell as ADMINISTRATOR!!!)**
+**Windows** *(run PowerShell as **ADMINISTRATOR**!!! If installation fails after first attempt, **REBOOT** your computer and execute command again.)*
 ```bash
 cd $HOME; PowerShell.exe -ExecutionPolicy Bypass -Command "Invoke-WebRequest -Uri 'https://raw.githubusercontent.com/tr4vLer/xenvast/main/autostart_windows.ps1' -OutFile 'autostart_windows.ps1'; .\autostart_windows.ps1"
 ```
