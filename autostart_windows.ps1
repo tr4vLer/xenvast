@@ -63,12 +63,9 @@ Set-Location xenvast
 # Store the absolute path to the xenvast directory
 $XENVAST_DIR = Get-Location
 
-# Create a desktop shortcut
-$ShortcutPath = "$([System.Environment]::GetFolderPath('Desktop'))\XenBlocksMiner.lnk"
-$WScriptShell = New-Object -ComObject WScript.Shell
-$Shortcut = $WScriptShell.CreateShortcut($ShortcutPath)
-$Shortcut.TargetPath = "powershell.exe"
-$Shortcut.Arguments = "-ExecutionPolicy Bypass -File `"$XENVAST_DIR\start_app.bat`""
+# Create a desktop shortcut to run the batch file
+$Shortcut.TargetPath = "cmd.exe"
+$Shortcut.Arguments = "/c `"$XENVAST_DIR\start_app.bat`""
 $Shortcut.IconLocation = "$XENVAST_DIR\static\logo.ico"
 $Shortcut.Save()
 
