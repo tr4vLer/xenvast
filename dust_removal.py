@@ -19,6 +19,7 @@ def load_config():
 
 config = load_config()
 API_KEY = config.get('API_KEY')
+api_key = API_KEY
 REMOVE_SCHEDULING = config.get('REMOVE_SCHEDULING')
 REMOVE_INACTIVE = config.get('REMOVE_INACTIVE')
 REMOVE_OFFLINE = config.get('REMOVE_OFFLINE')
