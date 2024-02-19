@@ -21,11 +21,19 @@ def load_config():
 
 # Main Script
 config = load_config()
-API_KEY = config['API_KEY']
-ETH_ADDRESS = config['ETH_ADDRESS']
-private_key_path = config['PRIVATE_KEY_PATH']
-DEV = config['DEV']
-passphrase = config['PASSPHRASE']
+if config is not None:
+    API_KEY = config.get('API_KEY')
+    ETH_ADDRESS = config.get('ETH_ADDRESS')
+    private_key_path = config.get('PRIVATE_KEY_PATH')
+    DEV = config.get('DEV')
+    passphrase = config.get('PASSPHRASE')
+else:
+    # Define default values or handle the case where config is None
+    API_KEY = None
+    ETH_ADDRESS = None
+    private_key_path = None
+    DEV = False
+    passphrase = None
 
 # Logging Configuration
 
