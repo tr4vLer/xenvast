@@ -52,7 +52,7 @@ $pythonPath = "C:/Python312"
 [Environment]::SetEnvironmentVariable("Path", "$env:Path;$pythonPath", "User")
 
 # Add DOSKEY alias for python3
-Add-Content -Path $PROFILE.AllUsersAllHosts -Value "doskey python3=C:\Python312\python.exe"
+doskey python3=C:\Python312\python.exe
 
 # Install Python packages
 Write-Host "Installing Python packages..."
