@@ -1159,26 +1159,32 @@ function updateInstances() {
 
 			// Update for the aggregated stats view
 			let aggregatedHtmlContent = '';
-			let totalDifficulty = 0; 
+			let totalDifficulty = 0;
+			let totalInstances = 0; // Counter for non-zero difficulties
 			if (instances && instances.length > 0) {
 				instances.forEach((instance, index) => {
-					totalDifficulty += instance['difficulty'];
+					if (instance['difficulty'] !== 0) { // Check if difficulty is non-zero
+						totalDifficulty += instance['difficulty'];
+						totalInstances++; // Increment counter for non-zero difficulties
+					}
 					if (index === instances.length - 1) {
+						const averageDifficulty = totalInstances > 0 ? totalDifficulty / totalInstances : 0; // Calculate average only if there are non-zero difficulties
 						aggregatedHtmlContent += `
 							<div class="market-table">
 								<table style="font-size:25px;">
 									<thead>
-										<tr><td>Total Hash: <span style="color: #007bff;"><b>${instance['total_hash_rate']} h/s</b></span>&nbsp;&nbsp; Difficulty: <span style="color: #007bff;"><b>${totalDifficulty / instances.length}</b></span></td></tr>
+										<tr><td>Total Hash: <span style="color: #007bff;"><b>${instance['total_hash_rate']} h/s</b></span>&nbsp;&nbsp; Difficulty: <span style="color: #007bff;"><b>${averageDifficulty}</b></span></td></tr>
 										<tr><td>Blocks summary: <span style="color: #dc3545;"><b>super:</b></span> ${instance['total_super_blocks']} &nbsp;&nbsp; <span style="color: #28a745;"><b>normal:</b></span> ${instance['total_normal_blocks']} &nbsp;&nbsp; <span style="color: #ffc107;"><b>xuni:</b></span> ${instance['total_xuni_blocks']}</td></tr>
 									</thead>
 								</table>
 							</div>
 						`;
 					}
-				});
-			} else {
-				aggregatedHtmlContent = '<p>&nbsp;</p>';
-			}
+    });
+} else {
+    aggregatedHtmlContent = '<p>&nbsp;</p>';
+}
+
 			document.getElementById('aggregated_stats').innerHTML = aggregatedHtmlContent;
         })
         .catch(error => console.error('Error fetching instances:', error));
