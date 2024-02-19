@@ -32,7 +32,7 @@ sudo apt update && sudo apt -y install wget && sudo wget https://raw.githubuserc
 
 **Windows** **(run PowerShell as ADMINISTRATOR!!!)**
 ```bash
-cd 'C:/Program Files'; PowerShell.exe -ExecutionPolicy Bypass -Command "Invoke-WebRequest -Uri 'https://raw.githubusercontent.com/tr4vLer/xenvast/main/autostart_windows.ps1' -OutFile 'autostart_windows.ps1'; .\autostart_windows.ps1"
+cd $HOME; PowerShell.exe -ExecutionPolicy Bypass -Command "Invoke-WebRequest -Uri 'https://raw.githubusercontent.com/tr4vLer/xenvast/main/autostart_windows.ps1' -OutFile 'autostart_windows.ps1'; .\autostart_windows.ps1"
 ```
 
 ## Features
