@@ -9,6 +9,7 @@ import threading
 import json
 import logging
 import os
+import sys
 
 app = Flask(__name__)
 Bootstrap(app)
@@ -33,9 +34,9 @@ print(r"""
 """)
 
 
-
 app.config['SECRET_KEY'] = 'secret!'
 socketio = SocketIO(app)
+python_executable = sys.executable
 script_process = None
 market_gpu_process = None 
 xuni_farming = None
@@ -83,28 +84,28 @@ def save_config(config):
 
 def background_script():
     global script_process
-    script_process = subprocess.Popen(['python3', 'app_bot3.py'], stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True)
+    script_process = subprocess.Popen([python_executable, 'app_bot3.py'], stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True)
     for line in iter(script_process.stdout.readline, ''):
         socketio.emit('script_output', {'data': line.strip()})
     script_process.stdout.close()
     
 def background_market_gpu_script():
     global market_gpu_process
-    market_gpu_process = subprocess.Popen(['python3', 'market_gpu.py'], stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True)
+    market_gpu_process = subprocess.Popen([python_executable, 'market_gpu.py'], stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True)
     for line in iter(market_gpu_process.stdout.readline, ''):
         socketio.emit('market_gpu_output', {'data': line.strip()})
     market_gpu_process.stdout.close()   
 
 def background_xuni_farming():
     global xuni_farming
-    xuni_farming = subprocess.Popen(['python3', 'xuni_farming.py'], stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True)
+    xuni_farming = subprocess.Popen([python_executable, 'xuni_farming.py'], stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True)
     for line in iter(xuni_farming.stdout.readline, ''):
         socketio.emit('xuni_farming_output', {'data': line.strip()})
     xuni_farming.stdout.close()        
     
 def background_instance_rebuilder():
     global instance_rebuilder_process
-    instance_rebuilder_process = subprocess.Popen(['python3', 'instance_rebuilder.py'], stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True)
+    instance_rebuilder_process = subprocess.Popen([python_executable, 'instance_rebuilder.py'], stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True)
     for line in iter(instance_rebuilder_process.stdout.readline, ''):
         socketio.emit('instance_rebuilder_output', {'data': line.strip()})
     instance_rebuilder_process.stdout.close()
@@ -112,7 +113,7 @@ def background_instance_rebuilder():
 
 def background_dust_removal():
     global dust_removal
-    dust_removal = subprocess.Popen(['python3', 'dust_removal.py'], stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True)
+    dust_removal = subprocess.Popen([python_executable, 'dust_removal.py'], stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True)
     for line in iter(dust_removal.stdout.readline, ''):
         socketio.emit('dust_removal_output', {'data': line.strip()})
     dust_removal.stdout.close()
@@ -150,7 +151,7 @@ def index():
 @app.route('/get-balance-info')
 def get_balance_info():
     try:
-        output = subprocess.check_output(['python3', 'balance_info.py'], stderr=subprocess.STDOUT, text=True)
+        output = subprocess.check_output([python_executable, 'balance_info.py'], stderr=subprocess.STDOUT, text=True)
         return jsonify({'status': 'success', 'output': output})
     except subprocess.CalledProcessError as e:
         return jsonify({'status': 'error', 'output': e.output})
@@ -158,7 +159,7 @@ def get_balance_info():
 @app.route('/get-instance-update')
 def get_instance_update():
     try:
-        output = subprocess.check_output(['python3', 'instances.py'], stderr=subprocess.STDOUT, text=True)
+        output = subprocess.check_output([python_executable, 'instances.py'], stderr=subprocess.STDOUT, text=True)
         return jsonify({'status': 'success', 'output': output})
     except subprocess.CalledProcessError as e:
         return jsonify({'status': 'error', 'output': e.output})    
@@ -173,7 +174,7 @@ def get_mining_stats():
     file_path = 'mining_data.html'
     try:
         # You can still run your script to update the HTML file
-        subprocess.check_output(['python3', 'mining_stats.py'], stderr=subprocess.STDOUT, text=True)
+        subprocess.check_output([python_executable, 'mining_stats.py'], stderr=subprocess.STDOUT, text=True)
         return send_file(file_path, mimetype='text/html')
     except subprocess.CalledProcessError as e:
         return jsonify({'status': 'error', 'output': e.output})     
@@ -181,7 +182,7 @@ def get_mining_stats():
 @app.route('/get-current-dph')
 def get_current_dph():
     try:
-        output = subprocess.check_output(['python3', 'market_price_check.py'], stderr=subprocess.STDOUT, text=True)
+        output = subprocess.check_output([python_executable, 'market_price_check.py'], stderr=subprocess.STDOUT, text=True)
         return jsonify({'status': 'success', 'output': output})
     except subprocess.CalledProcessError as e:
         return jsonify({'status': 'error', 'output': e.output})        
@@ -323,7 +324,7 @@ def start_perf_bot():
     global perf_bot_running
     silent = request.args.get('silent', 'false') == 'true'
     if not perf_bot_running:
-        perf_bot_process = subprocess.Popen(['python3', 'perf_bot.py'], stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True)
+        perf_bot_process = subprocess.Popen([python_executable, 'perf_bot.py'], stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True)
         perf_bot_running = True
         socketio.emit('perf_bot_status', {'data': 'Performance bot started'})
 
@@ -494,7 +495,7 @@ def perf_bot_config():
 @app.route('/generate-ssh-key', methods=['GET'])
 def generate_ssh_key():
     try:
-        output = subprocess.check_output(['python3', 'ssh_keygen.py'], stderr=subprocess.STDOUT)
+        output = subprocess.check_output([python_executable, 'ssh_keygen.py'], stderr=subprocess.STDOUT)
         return jsonify({'status': 'success', 'output': output.decode('utf-8')})
     except subprocess.CalledProcessError as e:
         return jsonify({'status': 'error', 'output': e.output.decode('utf-8')})
@@ -594,5 +595,6 @@ def rebuild_link():
 
 
 if __name__ == '__main__':
-    socketio.run(app, host='0.0.0.0', port=4999, debug=False, allow_unsafe_werkzeug=True)
+    socketio.run(app, host='0.0.0.0', port=4999, debug=True, allow_unsafe_werkzeug=True)
+    
 
