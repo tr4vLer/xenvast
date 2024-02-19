@@ -621,7 +621,7 @@ document.getElementById('bulk-action-form').addEventListener('submit', function(
                     <!-- Step 1 -->
                     <div id="step1" class="config-step" style="position: relative; padding-top:20px;">
                         <h3>Step 1: Create Vast.ai account</h3>
-                        <p>Register an account to rent GPUs and start mining XENBLOCKS.</p>
+                        <p>Register an account to rent GPUs and start mining XENBLOCKS, or login using an existing one.</p>
                         <i class="fas fa-arrow-right pointing-arrow-s1"></i> 
                         <div class="buttons-section" style="padding-top:40px;">
                             <button type="button" class="btn btn-primary" onclick="nextStep(1)">Next</button>
@@ -633,9 +633,8 @@ document.getElementById('bulk-action-form').addEventListener('submit', function(
                         <h3>Step 2: Setup API Key.</h3>
                         <ol>
                             <li>Open the drop-down menu and enter "ACCOUNT" section.</li>
-                            <li>Scroll down to "API Keys".</li>
-                            <li>Copy the API key.</li>
-                            <li>Paste copied API key here: <input type="text" class="form-control" id="api-key-wizz" name="api_key" value="{{ config['API_KEY'] }}"></li>
+                            <li>Scroll down to "API Keys" and copy key value.</li>
+                            <li>Paste copied API key below: <input type="text" class="form-control" id="api-key-wizz" name="api_key" value="{{ config['API_KEY'] }}"></li>
                         </ol>
 						<i class="fas fa-arrow-right pointing-arrow-s2"></i> 
                         <div class="buttons-section" style="padding-top:40px;">
@@ -649,12 +648,11 @@ document.getElementById('bulk-action-form').addEventListener('submit', function(
                         <h3>Step 3: Setup SSH Key.</h3>
                         <ol>
                             <li>Scroll up to "Change SSH Key" box.</li>
-                            <li>Paste your public SSH Key in the box and confirm by clicking the "SET SSH KEY" button.</li>
+                            <li>Check your public SSH key and paste it in the box. Save changes by clicking the "SET SSH KEY" button.</li>
                         </ol>
-							<p>If you're not sure whether you already have an SSH Key, click the button below to check.<br>If the SSH Key does not exist, the script will generate it for you.</p>
-							<p>Once ready, copy the SSH Key and paste it into the "Change SSH Key" section, then save by clicking the "SET SSH KEY" button.</p>
+							<p><b><u>Click the button below to verify your SSH key. If the SSH key does not exist, it will be generated.</b></u></p>
 
-                        <button type="button" id="generate-ssh-key-btn" class="btn btn-info">Generate SSH Key</button>
+                        <button type="button" id="generate-ssh-key-btn" class="btn btn-info">CHECK SSH Key</button>
 							<div id="ssh-key-output" style="margin-top: 20px;"></div>
 							<input type="hidden" id="ssh-key-path-wizz" name="ssh_key_path" value="{{ config['PRIVATE_KEY_PATH'] }}">
 						<div class="buttons-section" style="padding-top:40px;">
@@ -665,8 +663,8 @@ document.getElementById('bulk-action-form').addEventListener('submit', function(
 
                     <!-- Step 4 -->
                     <div id="step4" class="config-step" style="position: relative; padding-top:20px;">
-                        <h3>Step 4: Setup ETH address</h3>
-                        <p>Enter your ETH address here or do it later:</p>
+                        <h3>Step 4: Setup ETH (ERC20) address</h3>
+                        <p>Enter your Ethereum address for XENBLOCKS mining:</p>
                         <input type="text" class="form-control" id="eth-address-wizz" name="eth_address" value="{{ config['ETH_ADDRESS'] }}">
                         <div class="buttons-section" style="padding-top:40px;">
                             <button type="button" class="btn btn-primary" onclick="prevStep(4)">Previous</button>
