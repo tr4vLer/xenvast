@@ -79,14 +79,7 @@ def instance_list():
                         total_xuni_blocks += int(matching_entry.get('xuni_blocks', 0))
                         total_hash_rate += float(matching_entry.get('hash_rate', 0.0))   
                         total_hash_rate = round(total_hash_rate, 2)
-                        difficulty = matching_entry.get('difficulty', 0)
-                    else:
-                        # Set default values when no matching entry is found
-                        total_super_blocks = 'N/A'
-                        total_normal_blocks = 'N/A'
-                        total_xuni_blocks = 'N/A'
-                        total_hash_rate = 'N/A'
-                        difficulty = 'N/A'
+
                     
                     actual_status = instance_data.get('actual_status', 'N/A')
                     if actual_status != 'running':
@@ -213,11 +206,11 @@ def instance_list():
                         'normal_blocks': matching_entry.get('normal_blocks', 'N/A') if matching_entry else 'N/A',
                         'xuni_blocks': matching_entry.get('xuni_blocks', 'N/A') if matching_entry else 'N/A',
                         'hash_rate': matching_entry.get('hash_rate', 'N/A') if matching_entry else 'N/A',
+                        'difficulty':  matching_entry.get('difficulty', 0) if matching_entry else 0,
                         'total_super_blocks': total_super_blocks,
                         'total_normal_blocks': total_normal_blocks,
                         'total_xuni_blocks': total_xuni_blocks,
                         'total_hash_rate': total_hash_rate,
-                        'difficulty': difficulty
                     }
                     
                     instances.append(instance)
