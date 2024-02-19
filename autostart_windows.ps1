@@ -57,24 +57,29 @@ pip install requests eth-utils paramiko prettytable flask flask-socketio Flask-B
 Write-Host "Cloning the repository and building the project..."
 git clone https://github.com/tr4vLer/xenvast.git
 
+# Set the current location to the xenvast directory
 Set-Location xenvast
-
 
 # Store the absolute path to the xenvast directory
 $XENVAST_DIR = Get-Location
 
-# Create a desktop shortcut
-$ShortcutPath = "$([System.Environment]::GetFolderPath('Desktop'))\XenBlocksMiner.lnk"
+# Create the WScript.Shell COM object to make the shortcut
 $WScriptShell = New-Object -ComObject WScript.Shell
-$Shortcut = $WScriptShell.CreateShortcut($ShortcutPath)
+
+# Create a desktop shortcut object
+$Shortcut = $WScriptShell.CreateShortcut("$([System.Environment]::GetFolderPath('Desktop'))\XenBlocksMiner.lnk")
+
+# Set the properties of the shortcut if the shortcut object is valid
+$Shortcut.TargetPath = "cmd.exe"
 $Shortcut.TargetPath = "powershell.exe"
-$Shortcut.Arguments = "Set-Location '$XENVAST_DIR'; -ExecutionPolicy Bypass -File `"$XENVAST_DIR\start_app.ps1`" "
+$Shortcut.Arguments = "Set-Location '$XENVAST_DIR'; -ExecutionPolicy Bypass -File `"$XENVAST_DIR\start_app.ps1`""
 $Shortcut.IconLocation = "$XENVAST_DIR\static\logo.ico"
 $Shortcut.Save()
 
 Write-Host "Desktop shortcut created successfully."
 
+
 # Run the application
 Start-Process "powershell.exe" -ArgumentList "-NoExit -Command Set-Location '$XENVAST_DIR'; python app.py; Start-Sleep -Seconds 2; Start-Process 'http://127.0.0.1:4999'"
 
-Write-Host "Installation complete!"
+Write-Host "Installation complete."
