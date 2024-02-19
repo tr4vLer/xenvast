@@ -44,8 +44,7 @@ SEARCH_CRITERIA = {
     "rentable": {"eq": True},
     "gpu_name": {"in": [GPU_MARKET]}, 
     "cuda_max_good": {"gte": 11},
-    "type": "on-demand",
-    "intended_status": "running"
+    "type": "on-demand"
 }
 destroyed_instances_count = 0
 successful_orders = 0

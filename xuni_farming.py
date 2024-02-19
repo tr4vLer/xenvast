@@ -47,7 +47,6 @@ SEARCH_CRITERIA = {
     "gpu_name": {"in": [XUNI_GPU_MARKET]}, 
     "cuda_max_good": {"gte": 11},
     "type": "on-demand",
-    "intended_status": "running",
 }
 
 
