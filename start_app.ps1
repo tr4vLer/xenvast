@@ -2,7 +2,8 @@
 
 # Start the Python application in a new PowerShell window and keep it open
 $ScriptDirectory = Split-Path -Parent $MyInvocation.MyCommand.Path
-Start-Process powershell.exe -ArgumentList "-NoExit", "-Command", "python `"$ScriptDirectory\app.py`""
+Start-Process "powershell.exe" -ArgumentList "-NoExit", "-Command", "python `"$ScriptDirectory\app.py`""
+
 
 
 # Wait for the server to start
