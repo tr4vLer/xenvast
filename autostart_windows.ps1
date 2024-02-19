@@ -77,4 +77,4 @@ Write-Host "Desktop shortcut created successfully."
 # Run the application
 Start-Process "powershell.exe" -ArgumentList "-NoExit -Command Set-Location '$XENVAST_DIR'; python app.py; Start-Sleep -Seconds 2; Start-Process 'http://127.0.0.1:4999'"
 
-Write-Host "Installation complete."
+Write-Host "Installation complete!"
