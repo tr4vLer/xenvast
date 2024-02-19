@@ -68,8 +68,8 @@ $ShortcutPath = "$([System.Environment]::GetFolderPath('Desktop'))\XenBlocksMine
 $WScriptShell = New-Object -ComObject WScript.Shell
 $Shortcut = $WScriptShell.CreateShortcut($ShortcutPath)
 $Shortcut.TargetPath = "powershell.exe"
-$Shortcut.Arguments = "-NoExit -Command Set-Location '$XENVAST_DIR'; python app.py; Start-Sleep -Seconds 2; Start-Process 'http://127.0.0.1:4999'"
-$Shortcut.IconLocation = "$XENVAST_DIR\static\logo.png"
+$Shortcut.Arguments = "Set-Location '$XENVAST_DIR'; -ExecutionPolicy Bypass -File `"$XENVAST_DIR\start_app.ps1`" "
+$Shortcut.IconLocation = "$XENVAST_DIR\static\logo.ico"
 $Shortcut.Save()
 
 Write-Host "Desktop shortcut created successfully."
