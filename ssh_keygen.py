@@ -4,7 +4,9 @@ import os
 def generate_ssh_key():
     # Define the path for the key files
     home_dir = os.path.expanduser('~')
-    key_path = os.path.join(home_dir, '.ssh', 'id_ed25519')
+    ssh_dir = os.path.join(home_dir, '.ssh')
+    os.makedirs(ssh_dir, exist_ok=True)  # Ensure the .ssh directory exists
+    key_path = os.path.join(ssh_dir, 'id_ed25519')
 
     # Check if the key already exists
     if os.path.exists(key_path):
