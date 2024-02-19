@@ -18,16 +18,11 @@ def load_config():
         pass
 
 config = load_config()
-if config is not None:
-    API_KEY = config.get('API_KEY')
-    REMOVE_SCHEDULING = config.get('REMOVE_SCHEDULING')
-    REMOVE_INACTIVE = config.get('REMOVE_INACTIVE')
-    REMOVE_OFFLINE = config.get('REMOVE_OFFLINE')
-else:
-    API_KEY = None
-    REMOVE_SCHEDULING = False  
-    REMOVE_INACTIVE = False  
-    REMOVE_OFFLINE = False 
+API_KEY = config.get('API_KEY')
+REMOVE_SCHEDULING = config.get('REMOVE_SCHEDULING')
+REMOVE_INACTIVE = config.get('REMOVE_INACTIVE')
+REMOVE_OFFLINE = config.get('REMOVE_OFFLINE')
+
 
 # Logging Configuration
 logging.basicConfig(level=logging.INFO,
