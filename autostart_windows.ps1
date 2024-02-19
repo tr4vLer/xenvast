@@ -71,7 +71,6 @@ $Shortcut = $WScriptShell.CreateShortcut("$([System.Environment]::GetFolderPath(
 
 # Set the properties of the shortcut if the shortcut object is valid
 $Shortcut.TargetPath = "cmd.exe"
-$Shortcut.TargetPath = "powershell.exe"
 $Shortcut.Arguments = "Set-Location '$XENVAST_DIR'; -ExecutionPolicy Bypass -File 'start_app.ps1'"
 $Shortcut.IconLocation = "$XENVAST_DIR\static\logo.ico"
 $Shortcut.Save()
@@ -82,4 +81,4 @@ Write-Host "Desktop shortcut created successfully."
 # Run the application
 Start-Process "powershell.exe" -ArgumentList "-NoExit -Command Set-Location '$XENVAST_DIR'; python app.py; Start-Sleep -Seconds 2; Start-Process 'http://127.0.0.1:4999'"
 
-Write-Host "Installation complete!"
+Write-Host "Installation complete."
