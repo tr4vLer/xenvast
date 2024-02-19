@@ -1,2 +1,4 @@
 @echo off
-powershell.exe -ExecutionPolicy Bypass -File "%~dp0start_app.ps1"
+cd "%~dp0"
+powershell.exe -ExecutionPolicy Bypass -File "start_app.ps1"
+cmd /k
