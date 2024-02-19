@@ -63,16 +63,13 @@ Set-Location xenvast
 # Store the absolute path to the xenvast directory
 $XENVAST_DIR = Get-Location
 
-# Create a desktop shortcut
-$ShortcutPath = "$([System.Environment]::GetFolderPath('Desktop'))\XenBlocksMiner.lnk"
-$WScriptShell = New-Object -ComObject WScript.Shell
-$Shortcut = $WScriptShell.CreateShortcut($ShortcutPath)
-$Shortcut.TargetPath = "powershell.exe"
-# Use a single PowerShell command and ensure proper execution sequence
-$Shortcut.Arguments = "-NoExit -Command `"& { Set-Location '$XENVAST_DIR'; python app.py; Start-Sleep -Seconds 2; Start-Process 'http://127.0.0.1:4999' }`""
-# Ensure the icon file is an .ico file
+
+# Create a desktop shortcut to run the batch file
+$Shortcut.TargetPath = "cmd.exe"
+$Shortcut.Arguments = "/c `"$XENVAST_DIR\start_app.bat`""
 $Shortcut.IconLocation = "$XENVAST_DIR\static\logo.ico"
 $Shortcut.Save()
+
 
 
 Write-Host "Desktop shortcut created successfully."
