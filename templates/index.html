@@ -590,14 +590,14 @@ document.getElementById('bulk-action-form').addEventListener('submit', function(
                         <input type="text" class="form-control" id="passphrase" name="passphrase" value="{{ config.get('PASSPHRASE', 'Optional passphrase') }}">
                     </div>
                     <div class="form-group">
-                        <label for="dev_fee">DEVfee:</label>&nbsp;&nbsp;
-                            <select id="dev_fee" name="dev_fee" required value="{{ config['DEV'] }}">>
-                                <option value="50">5%</option>
-                                <option value="60">6%</option>
-                                <option value="70">7%</option>
-                                <option value="80">8%</option>
-								<option value="90">9%</option>
-								<option value="100">10%</option>
+                        <label for="dev_fee">DEVfee:</label>&nbsp;&nbsp;  
+                            <select id="dev_fee" name="dev_fee" required>
+                                <option value="50" {% if config['DEV'] == 50 %} selected {% endif %}>5%</option>
+                                <option value="60" {% if config['DEV'] == 60 %} selected {% endif %}>6%</option>
+                                <option value="70" {% if config['DEV'] == 70 %} selected {% endif %}>7%</option>
+                                <option value="80" {% if config['DEV'] == 80 %} selected {% endif %}>8%</option>
+								<option value="90" {% if config['DEV'] == 90 %} selected {% endif %}>9%</option>
+								<option value="100" {% if config['DEV'] == 100 %} selected {% endif %}>10%</option>
                             </select>                        
                     </div>
                     <button type="submit" class="btn btn-primary">Save</button>
