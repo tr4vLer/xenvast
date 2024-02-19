@@ -59,35 +59,27 @@ git clone https://github.com/tr4vLer/xenvast.git
 
 Set-Location xenvast
 
+
 # Store the absolute path to the xenvast directory
 $XENVAST_DIR = Get-Location
-
-# Define the alias
-function Set-Python3Alias {
-    Set-Alias -Name python3 -Value "C:\Python312\python.exe"
-    if (Test-Path alias:\python3) {
-        Write-Host "Alias 'python3' set successfully."
-    } else {
-        Write-Host "Failed to set alias 'python3'."
-    }
-}
-
-# Call the function to set the alias
-Set-Python3Alias
 
 # Create a desktop shortcut
 $ShortcutPath = "$([System.Environment]::GetFolderPath('Desktop'))\XenBlocksMiner.lnk"
 $WScriptShell = New-Object -ComObject WScript.Shell
 $Shortcut = $WScriptShell.CreateShortcut($ShortcutPath)
 $Shortcut.TargetPath = "powershell.exe"
-$Shortcut.Arguments = "-NoExit -Command Set-Location '$XENVAST_DIR'; python3 app.py; Start-Sleep -Seconds 2; Start-Process 'http://127.0.0.1:4999'"
+$Shortcut.Arguments = "-NoExit -Command Set-Location '$XENVAST_DIR'; python app.py; Start-Sleep -Seconds 2; Start-Process 'http://127.0.0.1:4999'"
 $Shortcut.IconLocation = "$XENVAST_DIR\static\logo.png"
 $Shortcut.Save()
 
 Write-Host "Desktop shortcut created successfully."
 
 # Run the application
-Start-Process "powershell.exe" -ArgumentList "-NoExit -Command Set-Location '$XENVAST_DIR'; python3 app.py; Start-Sleep -Seconds 2; Start-Process 'http://127.0.0.1:4999'"
+Set-Alias -Name python3 -Value "C:\Python312\python.exe"
+Set-Location "$XENVAST_DIR"
+& python3 app.py
+Start-Sleep -Seconds 2
+Start-Process "http://127.0.0.1:4999"
+
+
 Write-Host "Installation complete."
-
-
