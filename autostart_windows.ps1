@@ -71,7 +71,7 @@ $Shortcut = $WScriptShell.CreateShortcut("$([System.Environment]::GetFolderPath(
 
 # Set the properties of the shortcut if the shortcut object is valid
 $Shortcut.TargetPath = "cmd.exe"
-$Shortcut.Arguments = "/c `"$XENVAST_DIR\start_app.ps1`""
+$Shortcut.Arguments = "/c `"$XENVAST_DIR\start_app.bat`""
 $Shortcut.IconLocation = "$XENVAST_DIR\static\logo.ico"
 $Shortcut.Save()
 
