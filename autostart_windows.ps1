@@ -75,11 +75,6 @@ $Shortcut.Save()
 Write-Host "Desktop shortcut created successfully."
 
 # Run the application
-Set-Alias -Name python3 -Value "C:\Python312\python.exe"
-Set-Location "$XENVAST_DIR"
-& python3 app.py
-Start-Sleep -Seconds 2
-Start-Process "http://127.0.0.1:4999"
-
+Start-Process "powershell.exe" -ArgumentList "-NoExit -Command Set-Location '$XENVAST_DIR'; python app.py; Start-Sleep -Seconds 2; Start-Process 'http://127.0.0.1:4999'"
 
 Write-Host "Installation complete."
