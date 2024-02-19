@@ -213,7 +213,7 @@ def get_log_info(ssh_host, ssh_port, username, private_key_path, passphrase=None
             return None, None, None, None, None, None, None, None
         
     except Exception as e:
-        logging.error(f"Failed connect to Instance ID {instance_id}! Unable to establish ssh conneciton.")
+        logging.error(f"Failed to connect to Instance {instance_id} or miner.log file is missing! Check if SSH Key Path is correct in the settings or repeat STEP 3 in the Configuration Wizard then click COMPLETE in STEP4 to save changes. If miner.log file is missing rebuild your instance.")
         return None, None, None, None, None, None, None, None
     
     finally:
