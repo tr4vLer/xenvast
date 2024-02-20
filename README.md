@@ -19,6 +19,7 @@ Telegram Group: https://t.me/+Db-eLPJTy7Y4ZWZj
 
 ## Installation
 [![Video Tutorial](https://img.youtube.com/vi/Zu7tduxMQb4/0.jpg)](https://www.youtube.com/watch?v=Zu7tduxMQb4)
+> Proceed with the installation **on your computer**. It won't work for machines rented from vast.ai.
 
 **macOS**
 ```bash
