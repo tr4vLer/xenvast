@@ -86,8 +86,17 @@ def instance_list():
                         gpu_util = 'N/A'
                         cpu_util = 'N/A'
                     else:
-                        gpu_util = instance_data.get('gpu_util', 'N/A')  
-                        cpu_util = instance_data.get('cpu_util', 'N/A') 
+                        gpu_util_value = instance_data.get('gpu_util', 'N/A')
+                        if isinstance(gpu_util_value, (int, float)):
+                            gpu_util = round(gpu_util_value, 2)  
+                        else:
+                            gpu_util = 'N/A'  
+                        cpu_util_value = instance_data.get('cpu_util', 'N/A')
+                        if isinstance(cpu_util_value, (int, float)):
+                            cpu_util = round(cpu_util_value, 2)  
+                        else:
+                            cpu_util = 'N/A'  
+
                     disk_util = instance_data.get('disk_util', 'N/A')
                     disk_space = instance_data.get('disk_space', 'N/A') 
                     if disk_util is None or disk_util == 'N/A' or disk_util == -1:
@@ -150,13 +159,6 @@ def instance_list():
                         inst_age_hours, inst_age_remainder = divmod(inst_age_timedelta.seconds, 3600)
                         inst_age_minutes, inst_age_seconds = divmod(inst_age_remainder, 60)
                         inst_age = f"{inst_age_days}d {inst_age_hours}h {inst_age_minutes}m"
-
-                    # For 'gpu_util'
-                    gpu_util = instance_data.get('gpu_util', 0)  # Default to 0 if not found
-                    if isinstance(gpu_util, (int, float)):  # Ensure it's a number
-                        gpu_util = round(gpu_util, 2)
-                    else:
-                        gpu_util = 'N/A'  # Keep as 'N/A' if it's not a number
                     
  
                     if isinstance(cpu_util, (int, float)):  # Ensure it's a number
