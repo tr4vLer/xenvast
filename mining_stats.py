@@ -20,16 +20,18 @@ ETH_ADDRESS = config['ETH_ADDRESS']
 
 def fetch_json_data(url):
     """Fetch JSON data from a given URL."""
-    response = requests.get(url)
-    if response.status_code == 200:
-        try:
-            return response.json()
-        except ValueError as e:
-            print(f"Error parsing JSON: {e}")
-            return None
-    else:
-        print(f"Failed to fetch data: HTTP {response.status_code}")
-        return None
+    try:
+        response = requests.get(url, timeout=120)
+        response.raise_for_status()  # This will raise an HTTPError for bad responses
+        json_data = response.json()  # Decode JSON data
+        return json_data  # Return the JSON data
+    except requests.exceptions.RequestException as e:
+        print(f"Request failed: {e}")
+    except ValueError as e:
+        print(f"Error parsing JSON: {e}")
+    return None
+
+
 
 def generate_html_table(data_dict, title, exclude_keys=None):
     """Generate an HTML table from a dictionary, excluding specified keys."""
@@ -46,12 +48,16 @@ def generate_html_table(data_dict, title, exclude_keys=None):
 
 def find_account_data(accounts_data, account_address, exclude_keys=None):
     """Find and generate an HTML table for a specific account address within the 'data' list in the dictionary, excluding specified keys."""
-    accounts_list = accounts_data.get('data')  
+    accounts_list = accounts_data.get('data', [])
     if accounts_list:
+        account_address_lower = account_address.lower()  # Convert search address to lowercase
         for account in accounts_list:
-            if account.get("account") == account_address:
-                return generate_html_table(account, f"Miner Account<br><p class='custom-p'>{account_address}</p>", exclude_keys)
+            if account.get("account", "").lower() == account_address_lower:
+                print(f"Account {account_address} found.")
+                return generate_html_table(account, "Miner Account", exclude_keys)
+    print(f"No data found for account {account_address}")
     return f"No data found for account {account_address}<br>"
+
 
 def save_html(content, filename):
     """Save HTML content to a file."""
@@ -64,6 +70,8 @@ accounts_url = "https://raw.githubusercontent.com/TreeCityWes/HashHead/main/acco
 
 # Fetch and process account data
 accounts_data = fetch_json_data(accounts_url)
+if accounts_data:
+    print(f"Number of accounts fetched: {len(accounts_data.get('data', []))}")
 exclude_keys_account = ['account', 'daily_blocks', 'total_hashes_per_second']
 your_account_address = ETH_ADDRESS  
 account_data_html = ""
@@ -76,7 +84,7 @@ network_stats_html = ""
 if network_stats:
     network_stats_html = generate_html_table(network_stats, "Network Info")
     
-# Corrected and formatted HTML content for the text with link
+
 text_with_link_html = f"<div class='mining-info'>Data fetched from <a href='https://hashhead.io'>hashhead.io</a> thanks to <a href='https://github.com/TreeCityWes/HashHead'>TreeCityWes</a>. For more sophisticated data, visit <a href='https://xen.pub/xblocks.php?addr={your_account_address}'>XEN.pub</a>.</div>"
 
 # Combine HTML content and save to file
