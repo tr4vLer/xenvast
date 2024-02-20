@@ -102,8 +102,10 @@ socket.on('perf_bot_html', function (data) {
 				// Show or hide the status box based on the status value
 				if (data.status === 'Unknown' || data.status === 'running') {
 					statusElement.style.display = 'block';
+					disableAddRowButton(true); // Disable the "Add Row" button
 				} else if (data.status === 'stopped') {
 					statusElement.style.display = 'none';
+					disableAddRowButton(false); // Enable the "Add Row" button
 				}
 			});
 	}
@@ -592,6 +594,13 @@ document.querySelectorAll(".gpu-dropdown").forEach(function (dropdown) {
     });
 });
 
+// Function to disable or enable the "Add Row" button
+function disableAddRowButton(disable) {
+    const addButton = document.getElementById("addRowButton");
+    addButton.disabled = disable;
+}
+
+
 // Function to add a new row
 function addRow() {
     var table = document.getElementById("gpu-table").getElementsByTagName('tbody')[0];
@@ -617,7 +626,7 @@ function addRow() {
         limitPriceInput.name = "dph_rate[]";
         limitPriceInput.placeholder = "Your Limit price";
         limitPriceInput.required = true;
-        
+
         // Bind the validation function to the new limit price input
         limitPriceInput.addEventListener('change', validateLimitPrice);
 
