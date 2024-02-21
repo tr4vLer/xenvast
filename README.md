@@ -26,7 +26,7 @@ Telegram Group: https://t.me/+Db-eLPJTy7Y4ZWZj
 sudo apt update && sudo apt -y install wget && sudo wget https://raw.githubusercontent.com/tr4vLer/xenvast/main/autostart.sh && sudo chmod +x autostart.sh && sudo ./autostart.sh
 ```
 
-**Linux Ubuntu**
+**Linux Ubuntu** *(Execute the command below in the terminal.)*
 ```bash
 sudo apt update && sudo apt -y install wget && sudo wget https://raw.githubusercontent.com/tr4vLer/xenvast/main/autostart_linux.sh && sudo chmod +x autostart_linux.sh && ./autostart_linux.sh
 ```
