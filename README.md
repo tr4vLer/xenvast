@@ -21,7 +21,7 @@ Telegram Group: https://t.me/+Db-eLPJTy7Y4ZWZj
 [![Video Tutorial](https://img.youtube.com/vi/Zu7tduxMQb4/0.jpg)](https://www.youtube.com/watch?v=Zu7tduxMQb4)
 > Proceed with the installation **on your computer**. It won't work for machines rented from vast.ai.
 
-**macOS**
+**macOS** (MANUAL START!  `cd xenvast` and `python3 app.py`)
 ```bash
 sudo apt update && sudo apt -y install wget && sudo wget https://raw.githubusercontent.com/tr4vLer/xenvast/main/autostart.sh && sudo chmod +x autostart.sh && sudo ./autostart.sh
 ```
