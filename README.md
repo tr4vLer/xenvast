@@ -22,7 +22,7 @@ Telegram Group: https://t.me/+Db-eLPJTy7Y4ZWZj
 > Proceed with the installation **on your computer**. It won't work for machines rented from vast.ai.
 
 ### **macOS installation**
-Open terminal and paste below command. (MANUAL START after reboot!  `cd xenvast` and `python3 app.py`)
+Open terminal and paste below command. (MANUAL START after reboot!  `cd xenvast && python3 app.py`)
 ```bash
 brew update && brew install wget && wget https://raw.githubusercontent.com/tr4vLer/xenvast/main/autostart_macOS.sh && chmod +x autostart_macOS.sh && ./autostart_macOS.sh
 ```
