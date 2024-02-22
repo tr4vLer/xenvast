@@ -398,7 +398,7 @@ for ssh_info in ssh_info_list:
         else:
             hash_rate_per_gpu = 'N/A'
         
-        table_data.append([instance_id, gpu_name, num_gpus, round(gpu_util, 2), round(dph_total, 4), round(usd_per_gpu, 4), hash_rate, hash_rate_per_gpu, normal_blocks, xuni_blocks, super_blocks, round(runtime_hours, 2), round(normal_block_per_hour, 2), round(hash_rate_per_usd, 2), round(dollars_per_normal_block, 2), label, round(cpu_util, 2), round(hdd_utilization_percent, 2)])        
+        table_data.append([instance_id, gpu_name, num_gpus, round(gpu_util, 2), round(dph_total, 4), round(usd_per_gpu, 4), round(hash_rate, 2),  round(hash_rate_per_gpu, 2), normal_blocks, xuni_blocks, super_blocks, round(runtime_hours, 2), round(normal_block_per_hour, 2), round(hash_rate_per_usd, 2), round(dollars_per_normal_block, 2), label, round(cpu_util, 2), round(hdd_utilization_percent, 2)])        
     else:
         pass
 
