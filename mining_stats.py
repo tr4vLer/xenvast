@@ -54,7 +54,7 @@ def find_account_data(accounts_data, account_address, exclude_keys=None):
         for account in accounts_list:
             if account.get("account", "").lower() == account_address_lower:
                 print(f"Account {account_address} found.")
-                return generate_html_table(account, "Miner Account", exclude_keys)
+                return generate_html_table(account, f"Miner Account<br><p class='custom-p'>{account_address}</p>", exclude_keys)
     print(f"No data found for account {account_address}")
     return f"No data found for account {account_address}<br>"
 
