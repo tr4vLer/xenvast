@@ -113,4 +113,6 @@ The Instances tab also provides information about Hash speed and mined blocks. P
 - **Data Processing and Analysis:** Processes and analyzes retrieved log information. Calculates metrics like average hash rate, standard deviation, outliers, and performance statistics for each GPU type.
 - **Table Generation:** Every 5min script generates formatted tables containing performance data. It generates text and HTML outputs with performance summaries, detailed performance data, warnings about underutilized GPUs, outliers, and statistics. Outputs are stored in files named table_output.txt, table_output.html.
 
+### Note
+The tool is deploying [v1.1.3 xenblocksMiner by woodysoil](https://github.com/woodysoil/XenblocksMiner/releases/tag/v1.1.3) to each instance it rents. Please note that there is a minimum preset DEVfee of 5%.
 
