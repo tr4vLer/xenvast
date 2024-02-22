@@ -21,20 +21,33 @@ Telegram Group: https://t.me/+Db-eLPJTy7Y4ZWZj
 [![Video Tutorial](https://img.youtube.com/vi/Zu7tduxMQb4/0.jpg)](https://www.youtube.com/watch?v=Zu7tduxMQb4)
 > Proceed with the installation **on your computer**. It won't work for machines rented from vast.ai.
 
-**macOS** (MANUAL START!  `cd xenvast` and `python3 app.py`)
+### **macOS installation**
+Open terminal and paste below command. (MANUAL START after reboot!  `cd xenvast` and `python3 app.py`)
+```bash
+brew update && brew install wget && wget https://raw.githubusercontent.com/tr4vLer/xenvast/main/autostart_macOS.sh && chmod +x autostart_macOS.sh && ./autostart_macOS.sh
+```
+<!-- Separator Line -->
+<hr>
+
+### **Windows installation**
+run PowerShell as **ADMINISTRATOR** and paste below command! If installation fails after first attempt, **REBOOT** your computer and execute command again.
+```bash
+cd $HOME; PowerShell.exe -ExecutionPolicy Bypass -Command "Invoke-WebRequest -Uri 'https://raw.githubusercontent.com/tr4vLer/xenvast/main/autostart_windows.ps1' -OutFile 'autostart_windows.ps1'; .\autostart_windows.ps1"
+```
+<!-- Separator Line -->
+<hr>
+
+### **Linux installation**
+Execute the command below in the terminal. 
+```bash
+sudo apt update && sudo apt -y install wget && sudo wget https://raw.githubusercontent.com/tr4vLer/xenvast/main/autostart_linux.sh && sudo chmod +x autostart_linux.sh && ./autostart_linux.sh
+```
+Version without a desktop icon.
 ```bash
 sudo apt update && sudo apt -y install wget && sudo wget https://raw.githubusercontent.com/tr4vLer/xenvast/main/autostart.sh && sudo chmod +x autostart.sh && sudo ./autostart.sh
 ```
 
-**Linux Ubuntu** *(Execute the command below in the terminal.)*
-```bash
-sudo apt update && sudo apt -y install wget && sudo wget https://raw.githubusercontent.com/tr4vLer/xenvast/main/autostart_linux.sh && sudo chmod +x autostart_linux.sh && ./autostart_linux.sh
-```
 
-**Windows** *(run PowerShell as **ADMINISTRATOR**!!! If installation fails after first attempt, **REBOOT** your computer and execute command again.)*
-```bash
-cd $HOME; PowerShell.exe -ExecutionPolicy Bypass -Command "Invoke-WebRequest -Uri 'https://raw.githubusercontent.com/tr4vLer/xenvast/main/autostart_windows.ps1' -OutFile 'autostart_windows.ps1'; .\autostart_windows.ps1"
-```
 
 ## Features
 
@@ -108,7 +121,7 @@ The Instances tab also provides information about Hash speed and mined blocks. P
 
 ### Performance tab
 ![image](https://github.com/tr4vLer/xenvast/assets/149298759/9c119aed-c098-4b9a-b189-d62a014b5d41)
-- **Instance Listing:** Script Retrieves information about instances from the vast.ai platform using an API call. Information includes instance ID, GPU name, SSH host, SSH port, GPU utilization, disk utilization, CPU utilization, etc.
+- **Instance Listing:** Script Retrieves information about instances from the vast.ai platform using an API call. Information includes instance ID, GPU name, GPU utilization, disk utilization, CPU utilization, etc.
 - **SSH Connection and Log Retrieval:** Script establishes an SSH connection to each instance to retrieve log information. It retrieves data such as mining status, hash rate, runtime, and difficulty from instance log files every 5mim but you can request that instantly on button click
 - **Data Processing and Analysis:** Processes and analyzes retrieved log information. Calculates metrics like average hash rate, standard deviation, outliers, and performance statistics for each GPU type.
 - **Table Generation:** Every 5min script generates formatted tables containing performance data. It generates text and HTML outputs with performance summaries, detailed performance data, warnings about underutilized GPUs, outliers, and statistics. Outputs are stored in files named table_output.txt, table_output.html.
