@@ -114,6 +114,7 @@ def instance_list():
                     instance_id_reboot = instance_data.get('id', 'N/A')
                     instance_id_rebuild = instance_data.get('id', 'N/A')
                     instance_id_destroy = instance_data.get('id', 'N/A')
+                    num_gpus = instance_data.get('num_gpus', 'N/A')
 
                     # Calculate age with days, hours, minutes, and seconds
                     if start_date:
@@ -136,7 +137,7 @@ def instance_list():
                     hdd_usage = round((disk_util / max(disk_space, 1)) * 100, 2)
                     gpu_ram_gb = 'N/A'
                     if gpu_ram_mb != 'N/A' and isinstance(gpu_ram_mb, (int, float)):
-                        gpu_ram_gb = round(gpu_ram_mb / 1024, 2)
+                        gpu_ram_gb = round(gpu_ram_mb / 1024, 2) * num_gpus
                     else:
                         gpu_ram_gb = 0.0 
                     gpu_ram_used_gb = 'N/A'
@@ -189,7 +190,7 @@ def instance_list():
                         'end_date': end_datetime,
                         'duration': inst_age,
                         'gpu_name': instance_data.get('gpu_name', 'N/A'),
-                        'num_gpus': instance_data.get('num_gpus', 'N/A'),
+                        'num_gpus': num_gpus,
                         'gpu_util': gpu_util,
                         'cpu_util': cpu_util,
                         'disk_space': disk_space,
