@@ -1,4 +1,7 @@
 # XENBLOCKS Mining Toolbox by tr4vler
+[![Download for macOS](https://img.shields.io/badge/download-macOS-blue.svg)](#Installation)
+[![Download for Windows](https://img.shields.io/badge/download-Windows-blue.svg)](#Installation)
+[![Download for Linux](https://img.shields.io/badge/download-Linux-blue.svg)](#Installation)
 
 ## Description
 
