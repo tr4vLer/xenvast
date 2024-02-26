@@ -202,6 +202,7 @@ def instance_list():
                         'actual_status': actual_status,
                         'status_msg': instance_data.get('status_msg', 'N/A'),
                         'label': instance_data.get('label', 'N/A'),
+                        'is_bid': instance_data.get('is_bid', 'N/A'),
                         'ssh_port': instance_data.get('ssh_port', 'N/A'),
                         'ssh_host': instance_data.get('ssh_host', 'N/A'),
                         'ssh_link': ssh_link,
@@ -250,7 +251,7 @@ if __name__ == "__main__":
     print(f"Stats: {total_hash_rate}h/s, normal:{total_normal_blocks}, super:{total_super_blocks}, xuni:{total_xuni_blocks} ")
     if instances:
         for instance in instances:
-            print("Instance ID:", instance['instance_id'])
+            print("Instance ID:", instance['instance_id'], "Is bid:", instance['is_bid'])
         
         # Save instances data to JSON file using custom encoder
         with open('instances.json', 'w') as f:
