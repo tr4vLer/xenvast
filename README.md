@@ -9,9 +9,12 @@ This tool automates the mining process for users who rent GPUs through vast.ai. 
 The tool evaluates the performance of the rented machines by conducting multiple condition checks to determine whether a machine should continue running or be terminated. Based on these evaluations, it automatically takes actions such as termination, without requiring any user intervention.
 
 As a member of the XEN community, I've developed this tool, which is freely available for everyone to use. Feel free to explore the source code to understand its inner workings.
-Please note that the tool is continuously undergoing improvements. For further assistance or to report any issues, please join XENBLOCKS official Telegram group.
+Please note that the tool is continuously undergoing improvements. For further assistance or to report any issues, please join XENBLOCKS official Telegram group or contact me directly.
 
-Telegram Group: https://t.me/+Db-eLPJTy7Y4ZWZj
+Direct tool support: https://t.me/acc_telegrm
+
+XENBLOCKS official Group: https://t.me/+Db-eLPJTy7Y4ZWZj
+
 
 ## Table of Contents
 
@@ -28,6 +31,10 @@ Telegram Group: https://t.me/+Db-eLPJTy7Y4ZWZj
 Open terminal and paste below command. (MANUAL START!  `cd xenvast && python3 app.py` then access tool via http://127.0.0.1:4999)
 ```bash
 brew update && brew install wget && wget https://raw.githubusercontent.com/tr4vLer/xenvast/main/autostart_macOS.sh && chmod +x autostart_macOS.sh && ./autostart_macOS.sh
+```
+If you're encountering the error "**command not found: brew**" start by using the command below.
+```bash
+/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 ```
 <!-- Separator Line -->
 <hr>
