@@ -42,28 +42,39 @@ def instance_list(api_key):
                 if 'instances' not in response_json:
                     logging.error("Something went wrong. Check if API key provided is valid.")
                     return total_dph_running_machines, total_disk_cost, disk_cost_saving
+                
                 instances = response_json['instances']
                 for instance in instances:
-                    dph_base = instance.get('dph_base', 'N/A')
+                    dph_base = instance.get('dph_base', 0)  # Assume 0 if not available
+                    credit_discount = instance.get('credit_discount', 0)  # Assume 0 discount if not available
                     actual_status = instance.get('actual_status', 'N/A')
-                    storage_total_cost = instance.get('storage_total_cost', 'N/A')
+                    storage_total_cost = instance.get('storage_total_cost', 0)  # Assume 0 if not available
+
+                    # Apply discount to dph_base if any
+                    if credit_discount is not None and credit_discount != 'N/A':
+                        discounted_dph = float(dph_base) * (1 - float(credit_discount))
+                    else:
+                        discounted_dph = float(dph_base)
+
                     if actual_status.lower() == 'running':
-                        total_dph_running_machines += round(float(dph_base), 3)
+                        total_dph_running_machines += round(discounted_dph, 3)
+                    
                     if actual_status.lower() != 'offline':
                         total_disk_cost += round(float(storage_total_cost), 3)
+                    
                     if actual_status.lower() != 'offline' and actual_status.lower() != 'running':
                         disk_cost_saving += round(float(storage_total_cost), 3)                       
                 break  # Break the loop on successful response
             elif response.status_code == 429:
-                pass
                 if attempt < 2:  # Wait only if we have retries left
                     time.sleep(10)
             else:
-                print("ERROR! Setup your API key!")
+                logging.error("ERROR! Setup your API key!")
                 break
         except requests.exceptions.RequestException as e:
             logging.error(f"Request failed: {e}")
             break
+
     return total_dph_running_machines, total_disk_cost, disk_cost_saving
 
 # Function to calculate time covered by balance
