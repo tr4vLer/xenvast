@@ -27,6 +27,8 @@ private_key_path = config.get('PRIVATE_KEY_PATH')
 DEV = config.get('DEV')
 passphrase = config.get('PASSPHRASE')
 
+
+
 # Logging Configuration
 
 class LogFilter(logging.Filter):
@@ -55,7 +57,6 @@ def eip55_encode(address):
     return to_checksum_address(address)
 
 erc20_address = ETH_ADDRESS
-eip55_address = eip55_encode(erc20_address)
 dev_fee = DEV
 
 def instance_list(api_key):
@@ -110,7 +111,8 @@ def instance_list(api_key):
             break  # Exit loop for any other exception
     return instance_ids, ssh_info_list  # Return the collected instance IDs
 
-def rebuild_instance(api_key, instance_id):
+def rebuild_instance(api_key, instance_id, erc20_address):
+    eip55_address = eip55_encode(erc20_address)
     url = f"https://console.vast.ai/api/v0/instances/{instance_id}/"  
     onstart_script = f"wget https://github.com/woodysoil/XenblocksMiner/releases/download/v1.1.3/xenblocksMiner-v1.1.3-Linux-x86_64.tar.gz && tar -vxzf xenblocksMiner-v1.1.3-Linux-x86_64.tar.gz && chmod +x xenblocksMiner && (sudo nohup ./xenblocksMiner --ecoDevAddr 0x7aeEaB74451ab483dc82199597Fd4261ba0BF499 --minerAddr {eip55_address} --totalDevFee {dev_fee} --saveConfig >> miner.log 2>&1 &) && (while true; do sleep 10; : > miner.log; done) &"
     payload = {
@@ -129,10 +131,10 @@ def rebuild_instance(api_key, instance_id):
         logging.error(f"Response body: {response.text}")
         
         
-def update_onstart_script(ssh_host, ssh_port, username, private_key_path, instance_id, passphrase=None):
+def update_onstart_script(ssh_host, ssh_port, username, private_key_path, instance_id, erc20_address, passphrase=None):
+    eip55_address = eip55_encode(erc20_address)
     ssh = paramiko.SSHClient()
     ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-
     try:
         try:
             key = paramiko.Ed25519Key(filename=private_key_path, password=passphrase)
@@ -185,9 +187,9 @@ if __name__ == "__main__":
         ssh_host = ssh_info['ssh_host']
         ssh_port = ssh_info['ssh_port']
 
-        rebuild_instance(API_KEY, instance_id)
+        rebuild_instance(API_KEY, instance_id, erc20_address)
 
-        update_success = update_onstart_script(ssh_host, ssh_port, username, private_key_path, instance_id, passphrase) 
+        update_success = update_onstart_script(ssh_host, ssh_port, username, private_key_path, instance_id, erc20_address, passphrase) 
         if update_success:
             logging.info(f"Instance {instance_id} updated successfully. Rebooting now.")
             reboot_instance(API_KEY, instance_id)

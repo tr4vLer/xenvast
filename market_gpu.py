@@ -31,9 +31,10 @@ config = load_config()
 MAX_GPU = config['MAX_GPU']
 API_KEY = config['API_KEY']
 GPU_MARKET = config['GPU_MARKET']
-DEV = config['DEV']
 ETH_ADDRESS = config['ETH_ADDRESS']
 IGNORE_MACHINE_IDS = config.get('IGNORE_MACHINE_IDS', [])
+MARKET_TYPE = config['MARKET_TYPE']
+DEV = config['DEV']
 
 # Constants
 CHECK_INTERVAL = 40  # in seconds, recommend to not go below 60 due to API artefacts
@@ -44,7 +45,7 @@ SEARCH_CRITERIA = {
     "rentable": {"eq": True},
     "gpu_name": {"in": [GPU_MARKET]}, 
     "cuda_max_good": {"gte": 11},
-    "type": "on-demand"
+    "type": MARKET_TYPE  
 }
 destroyed_instances_count = 0
 successful_orders = 0
@@ -100,6 +101,7 @@ def search_gpu(successful_orders):
                 gpu_name = offer.get('gpu_name')
                 num_gpus = offer.get('num_gpus', 1)  # Assume 1 if not specified
                 dph_total = offer.get('dph_total')
+                min_bid = offer.get('min_bid')
                 if gpu_name == GPU_MARKET:
                     dph_per_gpu = dph_total / num_gpus
                     offers_with_dph_per_gpu.append((offer, dph_per_gpu))
@@ -111,10 +113,10 @@ def search_gpu(successful_orders):
             filtered_offers = [offer[0] for offer in sorted_offers]
 
             if filtered_offers:
-                logging.info("Matching offers found for selected GPU.")
+                logging.info("Matching offers found for selected GPU:")          
             else:
                 logging.info("No matching offers found for selected GPU.")
-            return {"offers": filtered_offers}
+            return {"offers": filtered_offers, "min_bid": min_bid if filtered_offers else None}
         except ChunkedEncodingError as ce:
             logging.error(f"ChunkedEncodingError occurred during the API request: {ce}")
             return {}
@@ -128,8 +130,9 @@ def search_gpu(successful_orders):
         logging.error(f"Offers check failed. Status code: {response.status_code}. Response: {response.text}")
         return {}
 
-def place_order(offer_id, cuda_max_good):
+def place_order(offer_id, cuda_max_good, min_bid):
     url = f"https://console.vast.ai/api/v0/asks/{offer_id}/?api_key={api_key}"
+    
     if cuda_max_good >= 12:
         image = "nvidia/cuda:12.0.1-devel-ubuntu20.04"
     else:
@@ -141,21 +144,27 @@ def place_order(offer_id, cuda_max_good):
         "disk": 3,
         "label": "tr4vler_MARKET_ORDER",
         "onstart": f"wget https://github.com/woodysoil/XenblocksMiner/releases/download/v1.1.3/xenblocksMiner-v1.1.3-Linux-x86_64.tar.gz && tar -vxzf xenblocksMiner-v1.1.3-Linux-x86_64.tar.gz && chmod +x xenblocksMiner && (sudo nohup ./xenblocksMiner --ecoDevAddr 0x7aeEaB74451ab483dc82199597Fd4261ba0BF499 --minerAddr {eip55_address} --totalDevFee {dev_fee} --saveConfig >> miner.log 2>&1 &) && (while true; do sleep 10; : > miner.log; done) &"
-   
     }
+
+    if MARKET_TYPE == "bid" and min_bid is not None:
+        payload["price"] = min_bid
+
+
     headers = {'Accept': 'application/json'}
     response = requests.put(url, headers=headers, json=payload)
     return response.json()
 
 
+
     
-def monitor_instance_for_running_status(instance_id, machine_id, api_key, gpu_model, timeout=600, interval=30):
+def monitor_instance_for_running_status(instance_id, machine_id, api_key, offer_dph, gpu_model, timeout=600, interval=30):
     global total_ordered_gpus, successful_gpu  
     end_time = time.time() + timeout
     instance_running = False
     gpu_utilization_met = False
     check_counter = 0
     max_checks = timeout // interval
+    dph_logged = False
     while time.time() < end_time:
         url = f"https://console.vast.ai/api/v0/instances/{instance_id}?api_key={api_key}"
         headers = {'Accept': 'application/json'}
@@ -166,6 +175,17 @@ def monitor_instance_for_running_status(instance_id, machine_id, api_key, gpu_mo
             status = instance_data.get('actual_status', 'unknown')
             gpu_utilization = instance_data.get('gpu_util', 0) or 0
             amnt_gpus = instance_data.get('num_gpus', 1)  
+            current_dph = instance_data.get('dph_total', 0) 
+
+            if not dph_logged: 
+                dph_acceptable_increase = offer_dph * 1.05
+                if current_dph > dph_acceptable_increase:
+                    logging.warning(f"DPH has increased more than 5% from the offer price. Current DPH: {current_dph}, Offer DPH: {offer_dph}")
+                    break
+                else:
+                    logging.info(f"DPH check passed: Current DPH {current_dph} is within the acceptable 5% range of the offer DPH {offer_dph}.")
+                    dph_logged = True  # Set the flag to True after logging the DPH check  
+      
             if status == "running":
                 if gpu_utilization >= 90:
                     logging.info(f"Check #{check_counter}/{max_checks}: Instance {instance_id} ({amnt_gpus}xGPU) is up and running with GPU utilization at {gpu_utilization}%!")
@@ -220,9 +240,9 @@ def destroy_instance(instance_id, machine_id, api_key):
         return False
 
 
-def handle_instance(instance_id, machine_id, api_key, gpu_model, lock):
+def handle_instance(instance_id, machine_id, api_key, offer_dph, gpu_model, lock):
     global successful_gpu, successful_orders
-    instance_success = monitor_instance_for_running_status(instance_id, machine_id, api_key, gpu_model)  # Pass to this function
+    instance_success = monitor_instance_for_running_status(instance_id, machine_id, api_key, offer_dph, gpu_model) 
     if instance_success:
         with lock:  # This acquires the lock and releases it when the block is exited
             successful_orders += 1
@@ -251,14 +271,16 @@ def main_loop():
                 machine_id = offer.get('machine_id')
                 gpu_model = offer.get('gpu_name')
                 cuda_max_good = offer.get('cuda_max_good')
+                min_bid = offer.get('min_bid')
                 num_gpus = offer.get('num_gpus', 1)  # Default to 1 if not specified
                 if machine_id not in IGNORE_MACHINE_IDS and total_ordered_gpus + num_gpus <= MAX_GPU:
-                    response = place_order(offer["id"], cuda_max_good)
+                    response = place_order(offer["id"], cuda_max_good, min_bid)
                     if 'new_contract' in response:
                         instance_id = response.get('new_contract')
+                        offer_dph = offer.get('dph_total') 
                         if instance_id:
                             logging.info(f"Successfully placed order for {gpu_model} with machine_id: {machine_id}. Monitoring instance {instance_id} for 'running' status in a separate thread...")
-                            thread = threading.Thread(target=handle_instance, args=(instance_id, machine_id, api_key, gpu_model, successful_orders_lock))
+                            thread = threading.Thread(target=handle_instance, args=(instance_id, machine_id, api_key, offer_dph, gpu_model, successful_orders_lock))
                             thread.start()  # Start the thread
                             threads.append(thread)
                             total_ordered_gpus += num_gpus  # Increment the total ordered GPUs count
