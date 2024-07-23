@@ -17,6 +17,8 @@
     },
     "GPU_MARKET": "RTX 4090",
     "XUNI_GPU_MARKET": "RTX 4090",
+    "MARKET_TYPE": "bid",
+    "LIMIT_TYPE": "on-demand",
     "ETH_ADDRESS": "",
     "PRIVATE_KEY_PATH": "",
     "PASSPHRASE": "",
