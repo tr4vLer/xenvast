@@ -16,7 +16,7 @@
     <div class="header">
         <div class="header-titles">
             <h2>XENBLOCKS MINER ToolBox for Vast.ai GPU's!</h2>
-            <h5 style="color:#dc3545;">This tool is in beta <b>v1.0.0</b>. Expect glitches! Please report bugs via <a style="color:#dc3545;" target="_blank" href="https://t.me/+Db-eLPJTy7Y4ZWZj"><u>Telegram.</u></a></h5>
+            <h5 style="color:#dc3545;">This tool is in beta <b>v1.1.0</b>. Expect glitches! Please report bugs via <a style="color:#dc3545;" target="_blank" href="https://t.me/+Db-eLPJTy7Y4ZWZj"><u>Telegram.</u></a></h5>
         </div>
         <div class="header-info">
             <div id="balance-info-output" class="balance-info-positioning">Vast.ai credit: $??</div>
@@ -99,6 +99,7 @@
                     <thead>
                     <tr>
                         <th>GPU Name</th>
+						<th>Type</th>
                         <th>GPU's quantity</th>
                         <th>Proceed</th>
                     </tr>
@@ -116,6 +117,12 @@
                                 <option value="A40">A40</option>
                             </select>
                         </td>
+						<td>
+                            <select class="form-control narrow-input" id="market-type" name="market_type" required value="{{ config['MARKET_TYPE'] }}">>
+                                <option value="on-demand">On-demand</option>
+                                <option value="bid">Interruptible</option>
+							</select>	
+						</td>
                         <td><input class="form-control narrow-input" type="number" step="1" id="max-gpu" name="max_gpu" required value="{{ config['MAX_GPU'] }}"></td>
                         <td>
 							<button type="submit" class="btn btn-primary" onclick="startMarketGpuScript()" id="start-market-gpu-script" disabled>PLACE ORDER</button>
@@ -227,7 +234,13 @@
 			<p>&nbsp;</p> 
 		{% endif %}
 	</div>
-    <div id="inst_tab">
+	<div class="tab">
+		<button data-tab="all_tab" id="tab_button_all" class="tablinks" onclick="openTab(event, 'all_tab')">ALL Instances</button>
+		<button id="tab_button_inst_tab" class="tablinks" onclick="openTab(event, 'inst_tab')">On-demand</button>
+		<button id="tab_button_inst_tab_bid" class="tablinks" onclick="openTab(event, 'inst_tab_bid')">Interruptible</button>
+    </div>
+	
+    <div id="inst_tab" class="tabcontent">
 		{% if instances %}
             {% for instance in instances %}
                 <table class="table mb-3" style="margin: 10px auto;">
@@ -307,6 +320,87 @@
 			 <p>No instances available.</p>
 		{% endif %}	 
     </div>
+    <div id="inst_tab_bid" class="tabcontent">
+		{% if instances %}
+            {% for instance in instances %}
+                <table class="table mb-3" style="margin: 10px auto;">
+                    <tbody class="instances-container">
+                        <!-- 1st Row -->
+                        <tr>
+                            <td style="width: 20%;"><input type="checkbox" name="instance_ids" style="margin-right:10px;" value="{{ instance['instance_id'] }}"><strong>Instance ID:</strong> {{ instance['instance_id'] }}</td>
+                            <td><span style="font-size: 90%;" class="badge {% if instance['verification'] == 'verified' %}badge-success{% else %}badge-warning{% endif %}">{{ instance['verification'] }}</span>&nbsp&nbsp&nbsp<strong>Machine ID:</strong> {{ instance['machine_id'] }}&nbsp&nbsp&nbsp<strong>Host ID:</strong> {{ instance['host_id'] }}&nbsp&nbsp&nbsp<strong>Location:</strong> {{ instance['geolocation'] }}</td>
+							<td style="width: 23%; text-align: right;">
+								<form id="reboot-instance-form">
+									<input type="hidden" id="instance_id_reboot" name="instance_id_reboot" value="{{ instance['instance_id_reboot'] }}">
+									<button type="button" style="padding: 0.0rem .3rem;" class="btn btn-primary btn-sm" onclick="submitRebootForm(this)">REBOOT</button>
+								</form>
+
+								<form id="rebuild-instance-form">
+									<input type="hidden" id="instance_id_rebuild" name="instance_id_rebuild" value="{{ instance['instance_id_rebuild'] }}">
+									<button type="button" style="padding: 0.0rem .3rem;" class="btn btn-warning btn-sm" onclick="submitRebuildForm(this)">REBUILD</button>
+								</form>
+								
+								<form id="destroyForm">
+									<input type="hidden" id="instance_id_destroy" name="instance_id_destroy" value="{{ instance['instance_id_destroy'] }}">
+									<button type="button" style="padding: 0.0rem .3rem;" class="btn btn-danger btn-sm" onclick="submitForm(this)">DESTROY</button>
+								</form>
+							</td>
+                        </tr>
+                        <!-- 2nd Row -->
+                        <tr>
+                            <td style="width: 20%;">
+								<div style="display: flex; align-items: center;">
+									<strong style="margin-right: 5px;">GPU:</strong>
+									<span>{{ instance['gpu_util'] }}%</span>
+									<div class="progress ml-2" style="height: 5px;width: 30%; flex-grow: 1;">
+										<div class="progress-bar bg-primary" role="progressbar" style="width: {{ instance['gpu_util'] }}%;"></div>
+									</div>
+								</div>									
+								<div style="display: flex; align-items: center;">
+									<strong style="margin-right: 5px;">CPU:</strong>
+									<span>{{ instance['cpu_util'] }}%</span>
+									<div class="progress ml-2" style="height: 5px; flex-grow: 1;">
+										<div class="progress-bar bg-success" role="progressbar" style="width: {{ instance['cpu_util'] }}%;"></div>
+									</div>
+								</div>
+								<div style="display: flex; align-items: center;">
+									<strong style="margin-right: 5px;">HDD:</strong>
+									<span>{{ instance['hdd_usage'] }}%</span>
+									<div class="progress ml-2" style="height: 5px; flex-grow: 1;">
+										<div class="progress-bar bg-warning" role="progressbar" style="width: {{ instance['hdd_usage'] }}%;"></div>
+									</div>
+								</div>
+								<strong>VRAM:</strong> {{ instance['gpu_ram_used_gb'] }}GB / {{ instance['gpu_ram_gb'] }}GB 
+                            </td>
+                            <td>
+								<p class="gpu_name_instances">
+								{{ instance['num_gpus'] }}x {{ instance['gpu_name'] }} &nbsp;&nbsp;&nbsp;&nbsp;
+								<span class="badge {% if instance['actual_status'] == 'running' %}badge-success{% elif instance['actual_status'] == 'offline' %}badge-danger{% else %}badge-warning{% endif %} gpu_status_badge">
+									{{ instance['actual_status'] }} 
+                                </span> &nbsp;&nbsp;&nbsp;&nbsp;
+								<p class="mining_stats"><b>Hash rate:</b> {{ instance['hash_rate'] }} h/s &nbsp;&nbsp <span style="color: #dc3545;"><b>super:</b></span> {{ instance['super_blocks'] }} &nbsp;&nbsp <span style="color: #28a745;"><b>normal:</b></span> {{ instance['normal_blocks'] }} &nbsp;&nbsp <span style="color: #ffc107;"><b>xuni:</b></span> {{ instance['xuni_blocks'] }}</p>
+                            </td>
+                            <td style="width: 23%; text-align: center;">
+                                <strong>Age:</strong> {{ instance['age'] }} <br>
+								<strong>Remaining:</strong> {{ instance['duration'] }}<br>
+								<button type="button" style="padding: 0.0rem .3rem;" class="btn btn-secondary btn-sm" onclick="copyToClipboard('{{ instance['ssh_link'] }}')">COPY SSH COMMAND</button>
+                                
+                            </td>
+                        </tr>						
+                        <!-- 3rd Row -->
+                        <tr>
+                            <td style="width: 20%;"><strong>Label:</strong> {{ instance['label'] or 'No Label' }}</td>
+                            <td><strong>Status Message:</strong> {{ instance['status_msg'] }}</td>
+                            <td style="width: 23%; text-align: right; font-size:16px"><strong>bid for ${{ instance['dph_total'] }}/hr&nbsp&nbsp</strong></td>
+                        </tr>
+                    </tbody>
+                </table>
+            {% endfor %}
+		{% else %}
+			 <p>No instances available.</p>
+		{% endif %}	 
+    </div>	
+	
 </div>
 <script>
 document.getElementById('bulk-action-form').addEventListener('submit', function(e) {
