@@ -302,6 +302,7 @@ document.getElementById('market-gpu-config').addEventListener('submit', function
 
     var maxGpu = document.getElementById('max-gpu').value;
     var gpuMarket = document.getElementById('gpu-market').value;
+	var marketType = document.getElementById('market-type').value;
 
     fetch('/market-gpu-config', {
         method: 'POST',
@@ -311,6 +312,7 @@ document.getElementById('market-gpu-config').addEventListener('submit', function
         body: new URLSearchParams({
             'max_gpu': maxGpu,
             'gpu_market': gpuMarket,
+			'market_type': marketType,
         })
     })
     .catch(error => {
@@ -344,9 +346,17 @@ document.getElementById('xuni-farming-config').addEventListener('submit', functi
 });
 
 function submitForm(button) {
-    event.preventDefault();
+    event.preventDefault();  // Prevent the default form submission
     var form = button.closest('form');
 
+    // Show a confirmation dialog to the user
+    var confirmAction = confirm("Are you sure you want to destroy this instance?");
+    if (!confirmAction) {
+        // User clicked "Cancel", so do nothing and return
+        return;
+    }
+
+    // User clicked "OK", proceed with the destruction process
     var instanceID = form.querySelector('input[name="instance_id_destroy"]').value;
 
     fetch('/destroy_instance', {
@@ -372,6 +382,7 @@ function submitForm(button) {
         alert('Error destroying instance');
     });
 }
+
 
 function submitRebootForm(button) {
     event.preventDefault();
@@ -1084,10 +1095,13 @@ function updateInstances() {
         .then(data => {
             const instances = data.instances;
 
-            let detailedHtmlContent = '';
+           let detailedHtmlContentForNotBid = '';
+		   let countNotBid = 0;
+
             if (instances && instances.length > 0) {
                 instances.forEach(instance => {
-                    detailedHtmlContent += `
+                    if (!instance.is_bid) {
+                        detailedHtmlContentForNotBid += `
                         <table class="table mb-3" style="margin: 10px auto;">
                             <tbody class="instances-container">
                                 <tr>
@@ -1159,12 +1173,106 @@ function updateInstances() {
                                 </tr>
                             </tbody>
                         </table>
-                    `;
+                        `; 
+						countNotBid++;
+                    }
                 });
             } else {
-                detailedHtmlContent = '<p>No instances available.</p>';
+                detailedHtmlContentForNotBid = '<p>No On-demand instances available.</p>';
             }
-            document.getElementById('inst_tab').innerHTML = detailedHtmlContent;
+            document.getElementById('inst_tab').innerHTML = detailedHtmlContentForNotBid;
+
+
+			let detailedHtmlContentForIsBid = '';
+			let countIsBid = 0;
+            if (instances && instances.length > 0) {
+                instances.forEach(instance => {
+                    if (instance.is_bid === true) {
+                        detailedHtmlContentForIsBid += `
+                        <table class="table mb-3" style="margin: 10px auto;">
+                            <tbody class="instances-container">
+                                <tr>
+                                    <td style="width: 20%;"><input type="checkbox" name="instance_ids" style="margin-right:10px;" value="${instance['instance_id']}"><strong>Instance ID:</strong> ${instance['instance_id']}</td>
+                                    <td><span style="font-size: 90%;" class="badge ${instance['verification'] === 'verified' ? 'badge-success' : 'badge-warning'}">${instance['verification']}</span>&nbsp&nbsp&nbsp<strong>Machine ID:</strong> ${instance['machine_id']}&nbsp&nbsp&nbsp<strong>Host ID:</strong> ${instance['host_id']}&nbsp&nbsp&nbsp<strong>Location:</strong> ${instance['geolocation']}</td>
+                                    <td style="width: 23%;text-align: right;">
+                                        <form id="reboot-instance-form">
+                                            <input type="hidden" id="instance_id_reboot" name="instance_id_reboot" value="${instance['instance_id_reboot']}">
+                                            <button type="button" style="padding: 0.0rem .3rem;" class="btn btn-primary btn-sm" onclick="submitRebootForm(this)">REBOOT</button>
+                                        </form>
+                                        <form id="rebuild-instance-form">
+                                            <input type="hidden" id="instance_id_rebuild" name="instance_id_rebuild" value="${instance['instance_id_rebuild']}">
+                                            <button type="button" style="padding: 0.0rem .3rem;" class="btn btn-warning btn-sm" onclick="submitRebuildForm(this)">REBUILD</button>
+                                        </form>
+                                        <form id="destroyForm">
+                                            <input type="hidden" id="instance_id_destroy" name="instance_id_destroy" value="${instance['instance_id_destroy']}">
+                                            <button type="button" style="padding: 0.0rem .3rem;" class="btn btn-danger btn-sm" onclick="submitForm(this)">DESTROY</button>
+                                        </form>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="width: 20%;">
+                                        <div style="display: flex; align-items: center;">
+                                            <strong style="margin-right: 5px;">GPU:</strong>
+                                            <span>${instance['gpu_util']}%</span>
+                                            <div class="progress ml-2" style="height: 5px;width: 30%; flex-grow: 1;">
+                                                <div class="progress-bar bg-primary" role="progressbar" style="width: ${instance['gpu_util']}%;"></div>
+                                            </div>
+                                        </div>                                    
+                                        <div style="display: flex; align-items: center;">
+                                            <strong style="margin-right: 5px;">CPU:</strong>
+                                            <span>${instance['cpu_util']}%</span>
+                                            <div class="progress ml-2" style="height: 5px; flex-grow: 1;">
+                                                <div class="progress-bar bg-success" role="progressbar" style="width: ${instance['cpu_util']}%;"></div>
+                                            </div>
+                                        </div>
+                                        <div style="display: flex; align-items: center;">
+                                            <strong style="margin-right: 5px;">HDD:</strong>
+                                            <span>${instance['hdd_usage']}%</span>
+                                            <div class="progress ml-2" style="height: 5px; flex-grow: 1;">
+                                                <div class="progress-bar bg-warning" role="progressbar" style="width: ${instance['hdd_usage']}%;"></div>
+                                            </div>
+                                        </div>
+                                        <strong>VRAM:</strong> ${instance['gpu_ram_used_gb']}GB / ${instance['gpu_ram_gb']}GB 
+                                    </td>
+                                    <td>
+                                        <p class="gpu_name_instances">
+                                        ${instance['num_gpus']}x ${instance['gpu_name']} &nbsp;&nbsp;&nbsp;&nbsp;
+                                        <span class="badge ${instance['actual_status'] === 'running' ? 'badge-success' : instance['actual_status'] === 'offline' ? 'badge-danger' : 'badge-warning'} gpu_status_badge">
+                                            ${instance['actual_status']} 
+                                        </span> &nbsp;&nbsp;&nbsp;&nbsp;<br>
+                                        <p class="mining_stats">
+                                            <b>Hash rate:</b> ${instance['hash_rate']} h/s &nbsp;&nbsp;
+                                            <span style="color: #dc3545;"><b>super:</b></span> ${instance['super_blocks']} &nbsp;&nbsp;
+                                            <span style="color: #28a745;"><b>normal:</b></span> ${instance['normal_blocks']} &nbsp;&nbsp;
+                                            <span style="color: #ffc107;"><b>xuni:</b></span> ${instance['xuni_blocks']}
+                                        </p>
+                                    </td>
+                                    <td style="width: 23%; text-align: center;">
+                                        <strong>Age:</strong> ${instance['age']} <br>
+                                        <strong>Remaining:</strong> ${instance['duration']}<br>
+                                        <button type="button" style="padding: 0.0rem .3rem;" class="btn btn-secondary btn-sm" onclick="copyToClipboard('${instance['ssh_link']}')">COPY SSH COMMAND</button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="width: 20%;"><strong>Label:</strong> ${instance['label'] || 'No Label'}</td>
+                                    <td><strong>Status Message:</strong> ${instance['status_msg']}</td>
+                                    <td style="width: 23%; text-align: right; font-size:16px"><strong>bid for $${instance['dph_total']}/hr&nbsp&nbsp</strong></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        `; 
+						countIsBid++;
+                    }
+                });
+            } else {
+                detailedHtmlContentForIsBid = '<p>No Interruptible instances available.</p>';
+            }
+            document.getElementById('inst_tab_bid').innerHTML = detailedHtmlContentForIsBid;
+
+			// Update counters next to tab buttons
+            document.getElementById('tab_button_all').innerText = `ALL Instances (${countNotBid + countIsBid})`;
+            document.getElementById('tab_button_inst_tab').innerText = `On-demand (${countNotBid})`;
+            document.getElementById('tab_button_inst_tab_bid').innerText = `Interruptible (${countIsBid})`;
 
 			// Update for the aggregated stats view
 			let aggregatedHtmlContent = '';
@@ -1203,6 +1311,29 @@ function updateInstances() {
 // Call updateInstances initially and every 6000 milliseconds (6 seconds)
 updateInstances();
 setInterval(updateInstances, 6000);
+
+
+document.addEventListener("DOMContentLoaded", function() {
+    document.querySelector('.tablinks[data-tab="all_tab"]').click();
+});
+function openTab(evt, tabName) {
+    var i, tabcontent, tablinks;
+    tabcontent = document.getElementsByClassName("tabcontent");
+    for (i = 0; i < tabcontent.length; i++) {
+        tabcontent[i].style.display = "none";
+    }
+    tablinks = document.getElementsByClassName("tablinks");
+    for (i = 0; i < tablinks.length; i++) {
+        tablinks[i].className = tablinks[i].className.replace(" active", "");
+    }
+    if (tabName === 'all_tab') {
+        document.getElementById('inst_tab').style.display = "block";
+        document.getElementById('inst_tab_bid').style.display = "block";
+    } else {
+        document.getElementById(tabName).style.display = "block";
+    }
+    evt.currentTarget.className += " active";
+}
 
 
 
